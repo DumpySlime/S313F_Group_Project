@@ -7,7 +7,7 @@
 
     <!--top pane-->
     <LinearLayout
-        android:id="@+id/titlebar"
+        android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:orientation="vertical"
@@ -32,7 +32,7 @@
 
     <!--bottom pane-->
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/menubar"
+        android:id="@+id/menu_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/design_default_color_secondary_variant">
