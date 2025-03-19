@@ -15,14 +15,14 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Public Transport"
-            android:textSize="30dp"/>
+            android:text="@string/app_name"
+            android:textSize="40sp"/>
     </LinearLayout>
     <!--centre pane-->
     <LinearLayout
         android:id="@+id/list_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:orientation="vertical"
         android:layout_weight="8">
         <ExpandableListView
