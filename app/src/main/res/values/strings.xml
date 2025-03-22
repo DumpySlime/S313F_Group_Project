@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PublicTransportApp</string>
+    <string name="shortcut1">1</string>
+    <string name="shortcut2">2</string>
+    <string name="shortcut3">3</string>
+    <string name="shortcut4">4</string>
+</resources>
