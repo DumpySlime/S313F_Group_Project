@@ -3,94 +3,106 @@ package com.example.publictransportapp;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 
 public class BookmarkActivity extends AppCompatActivity {
-    private ListView bookmarkListView;
-    private ArrayAdapter<String> adapter;
-    private ArrayList<String> bookmarks;
+    private LinearLayout stopListContainer;
+    private LinearLayout placeListContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bookmark);
 
-        // Initialize UI components
-        bookmarkListView = findViewById(R.id.bookmarkListView);
-        Button addBookmarkButton = findViewById(R.id.addBookmarkButton);
+        stopListContainer = findViewById(R.id.stop_list_container);
+        placeListContainer = findViewById(R.id.place_list_container);
 
-        // Initialize the bookmarks list and adapter
-        bookmarks = new ArrayList<>();
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, bookmarks);
-        bookmarkListView.setAdapter(adapter);
+        Button addStopButton = findViewById(R.id.btn_add_stop);
+        Button addPlaceButton = findViewById(R.id.btn_add_place);
 
-        // Add bookmark button functionality
-        addBookmarkButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addNewBookmark();
-            }
-        });
-
-        // Handle item click (view details)
-        bookmarkListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String selectedBookmark = bookmarks.get(position);
-                viewBookmarkDetails(selectedBookmark);
-            }
-        });
-
-        // Handle item long click (delete)
-        bookmarkListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                confirmDeleteBookmark(position);
-                return true;
-            }
-        });
+        addStopButton.setOnClickListener(v -> showAddStopDialog());
+        addPlaceButton.setOnClickListener(v -> showAddPlaceDialog());
     }
 
-    // Add a new bookmark
-    private void addNewBookmark() {
-        bookmarks.add("Route " + (bookmarks.size() + 1) + ": Example Stop");
-        adapter.notifyDataSetChanged();
-        Toast.makeText(this, "Bookmark added!", Toast.LENGTH_SHORT).show();
+    private void showAddStopDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_stop, null);
+        builder.setView(dialogView);
+
+        EditText routeNumberInput = dialogView.findViewById(R.id.input_route_number);
+        EditText distinctionInput = dialogView.findViewById(R.id.input_distinction);
+
+        builder.setPositiveButton("Add", (dialog, which) -> {
+            String routeNumber = routeNumberInput.getText().toString();
+            String distinction = distinctionInput.getText().toString();
+            addStopToList(routeNumber, distinction);
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        builder.create().show();
     }
 
-    // View bookmark details
-    private void viewBookmarkDetails(String bookmark) {
-        // Example action: Show a toast or navigate to another screen
-        Toast.makeText(this, "Viewing details for: " + bookmark, Toast.LENGTH_SHORT).show();
-        // Intent intent = new Intent(this, RealTimeTrackingActivity.class);
-        // intent.putExtra("bookmark", bookmark);
-        // startActivity(intent);
+    private void addStopToList(String routeNumber, String distinction) {
+        View stopItem = LayoutInflater.from(this).inflate(R.layout.item_stop, stopListContainer, false);
+        TextView stopDetails = stopItem.findViewById(R.id.text_stop_details);
+        Button deleteButton = stopItem.findViewById(R.id.btn_delete_stop);
+
+        stopDetails.setText("Route: " + routeNumber + ", Distinction: " + distinction);
+
+        // Set delete functionality
+        deleteButton.setOnClickListener(v -> stopListContainer.removeView(stopItem));
+
+        stopListContainer.addView(stopItem);
     }
 
-    // Confirm delete
-    private void confirmDeleteBookmark(int position) {
-        new AlertDialog.Builder(this)
-                .setTitle("Delete Bookmark")
-                .setMessage("Are you sure you want to delete this bookmark?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        bookmarks.remove(position);
-                        adapter.notifyDataSetChanged();
-                        Toast.makeText(BookmarkActivity.this, "Bookmark deleted!", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton("No", null)
-                .show();
+    private void showAddPlaceDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_add_place, null);
+        builder.setView(dialogView);
+
+        EditText locationInput = dialogView.findViewById(R.id.input_location);
+        EditText categoryInput = dialogView.findViewById(R.id.input_category);
+
+        builder.setPositiveButton("Add", (dialog, which) -> {
+            String location = locationInput.getText().toString();
+            String category = categoryInput.getText().toString();
+            addPlaceToList(location, category);
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        builder.create().show();
+    }
+
+    private void addPlaceToList(String location, String category) {
+        View placeItem = LayoutInflater.from(this).inflate(R.layout.item_place, placeListContainer, false);
+        TextView placeDetails = placeItem.findViewById(R.id.text_place_details);
+        Button deleteButton = placeItem.findViewById(R.id.btn_delete_place);
+
+        placeDetails.setText("Location: " + location + ", Category: " + category);
+
+        // Set delete functionality
+        deleteButton.setOnClickListener(v -> placeListContainer.removeView(placeItem));
+
+        placeListContainer.addView(placeItem);
     }
 }
