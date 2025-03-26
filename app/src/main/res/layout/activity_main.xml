@@ -19,16 +19,12 @@
             android:textSize="40sp"/>
     </LinearLayout>
     <!--centre pane-->
-    <LinearLayout
-        android:id="@+id/list_view"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
         android:layout_weight="8">
-        <ExpandableListView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+    </androidx.fragment.app.FragmentContainerView>
 
     <!--bottom pane-->
     <androidx.appcompat.widget.Toolbar
