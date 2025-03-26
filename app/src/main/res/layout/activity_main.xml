@@ -35,12 +35,12 @@
         app:tabIndicatorColor="@color/white"
         app:tabSelectedTextColor="@color/white">
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/buslist"
+            android:id="@+id/bus_list_tab"
             android:text="@string/busList_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/bookmark"
+            android:id="@+id/bookmark_tab"
             android:text="@string/bookmark_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:layout_gravity="center_vertical"
+    android:background="@drawable/bus_list_border">
+
+    <TextView
+        android:id="@+id/busListRow_route_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        android:text="@string/route_id"
+        android:textSize="16pt" />
+
+    <TextView
+        android:id="@+id/busListRow_stop_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/stop_name"
+        android:textSize="10pt"/>
+
+    <TextView
+        android:id="@+id/busListRow_dest_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="150dp"
+        android:layout_marginTop="40dp"
+        android:text="@string/dest_name"
+        android:textSize="8pt" />
+
+    <TextView
+        android:id="@+id/busListRow_eta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="330dp"
+        android:text="@string/eta"
+        android:textSize="14pt" />
+
+</FrameLayout>
