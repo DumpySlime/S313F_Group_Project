@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Time;
+import java.time.OffsetDateTime;
 
 public interface EtaRetriever {
     final String ROUTE_STOP_ETA_URL = "https://data.etabus.gov.hk/v1/transport/kmb/eta/";
@@ -27,11 +28,12 @@ public interface EtaRetriever {
                     public void onResponse(JSONObject res) {
                         try {
                             JSONArray etaData = res.getJSONArray("data");
-                            for (int i = 0; i <= etaData.length(); i++) {
+                            // get the 3 eta and change its format to remaining time (in minutes)
+                            for (int i = 0; i < etaData.length(); i++) {
                                 JSONObject eta = etaData.getJSONObject(i);
-                                etas.setEta(eta.getClass("eta")<Time>);
+                                String etaString = eta.getString("eta");
+                                OffsetDateTime offsetDateTime = OffsetDateTime.parse(etaString);
 
-                                )
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

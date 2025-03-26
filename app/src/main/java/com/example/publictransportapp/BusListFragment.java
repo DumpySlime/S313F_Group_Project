@@ -105,7 +105,7 @@ public class BusListFragment extends Fragment implements EtaRetriever{
                     public void onResponse(JSONObject res) {
                         try {
                             JSONArray stops = res.getJSONArray("data");
-                            for (int i = 0; i <= stops.length(); i++) {
+                            for (int i = 0; i < stops.length(); i++) {
                                 JSONObject stop = stops.getJSONObject(i);
                                 stopList.add(new StopListModel(
                                         stop.getString("stop"),
@@ -135,7 +135,7 @@ public class BusListFragment extends Fragment implements EtaRetriever{
                 public void onResponse(JSONObject res) {
                     try {
                         JSONArray routes = res.getJSONArray("data");
-                        for (int i = 0; i <= routes.length(); i++) {
+                        for (int i = 0; i < routes.length(); i++) {
                             JSONObject route = routes.getJSONObject(i);
                             routeList.add(new RouteListModel(
                                     route.getString("route"),
