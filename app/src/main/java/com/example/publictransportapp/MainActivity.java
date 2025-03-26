@@ -8,9 +8,6 @@ import android.widget.FrameLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -30,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentCotainer = findViewById(R.id.fragment_container);
         menuBar = findViewById(R.id.menu_bar);
         // initialize bookmark button
-        button = findViewById(R.id.bookmark);
+        button = findViewById(R.id.bookmark_tab);
 
         //load fragment_bus_list when start app
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new BusListFragment())
