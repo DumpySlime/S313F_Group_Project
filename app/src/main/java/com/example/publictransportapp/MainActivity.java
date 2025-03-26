@@ -72,7 +72,4 @@ public class MainActivity extends AppCompatActivity {
     public void goBookmark(View view){
         startActivity(new Intent(this, BookmarkActivity.class));
     }
-    public void goBusList(View view){
-        startActivity(new Intent(this, BusListFragment.class));
-    }
 }
