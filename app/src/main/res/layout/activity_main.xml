@@ -20,7 +20,7 @@
             android:textColor="@color/white"/>
     </LinearLayout>
     <!--centre pane (swappable)-->
-    <androidx.fragment.app.FragmentContainerView
+    <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -35,20 +35,20 @@
         app:tabIndicatorColor="@color/white"
         app:tabSelectedTextColor="@color/white">
         <com.google.android.material.tabs.TabItem
-            android:id="@+id/bookmark"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/bookmark_button"
-            android:onClick="goBookmark"/>
-        <com.google.android.material.tabs.TabItem
             android:id="@+id/buslist"
             android:text="@string/busList_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="goBusList"/>
+            android:layout_height="wrap_content"/>
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/bookmark"
+            android:text="@string/bookmark_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </com.google.android.material.tabs.TabLayout>
     <LinearLayout
+        android:id="@+id/mtrl_view_tag_bottom_padding"
         android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+        android:layout_height="50dp"
+        android:orientation="horizontal" />
 
 </LinearLayout>
