@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
+    android:layout_height="fill_parent">
 
     <!--top pane-->
     <LinearLayout
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@color/design_default_color_secondary_variant">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/app_name"
-            android:textSize="40sp"/>
+            android:textSize="40sp"
+            android:textColor="@color/white"/>
     </LinearLayout>
-    <!--centre pane-->
+    <!--centre pane (swappable)-->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
@@ -26,18 +27,28 @@
         android:layout_weight="8"/>
 
     <!--bottom pane-->
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/menu_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/design_default_color_secondary_variant">
-    <Button
-        android:id="@+id/bookmark"
-        android:text="@string/bookmark_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="goBookmark"
-    />
-    </androidx.appcompat.widget.Toolbar>
+        android:background="@color/design_default_color_secondary_variant"
+        app:tabIndicatorColor="@color/white"
+        app:tabSelectedTextColor="@color/white">
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/bookmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bookmark_button"
+            android:onClick="goBookmark"/>
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/buslist"
+            android:text="@string/busList_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="goBusList"/>
+    </com.google.android.material.tabs.TabLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
 
 </LinearLayout>
