@@ -20,4 +20,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "PublicTransportApp"
-include(":app")
+include ':app'
