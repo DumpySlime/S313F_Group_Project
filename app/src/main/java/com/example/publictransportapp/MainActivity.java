@@ -43,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         fragment = new BusListFragment();
                         break;
-                    //case 1:
-                        //fragment = new BookmarkActivity();
-                        //break;
+                    case 1:
+                        fragment = new BookmarkFragment();
+                        break;
                 }
 
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment)
@@ -67,6 +67,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goBookmark(View view){
-        startActivity(new Intent(this, BookmarkActivity.class));
+        startActivity(new Intent(this, BookmarkFragment.class));
     }
 }
