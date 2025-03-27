@@ -1,15 +1,14 @@
 package com.example.publictransportapp.model;
 
-public class BusRowModel {
+public class BusRowModel extends RouteSearchModel {
     private String stop,
-        dest,
-        route;
+        dest;
     private int eta;
 
-    public BusRowModel(String stop, String dest, String route, int eta) {
+    public BusRowModel(String stop, String dest, String route, int eta, String direction, int serviceType) {
+        super(route, direction, serviceType);
         this.stop = stop;
         this.dest = dest;
-        this.route = route;
         this.eta = eta;
     }
 
@@ -19,10 +18,6 @@ public class BusRowModel {
 
     public String getDest() {
         return dest;
-    }
-
-    public String getRoute() {
-        return route;
     }
 
     public int getEta() {
