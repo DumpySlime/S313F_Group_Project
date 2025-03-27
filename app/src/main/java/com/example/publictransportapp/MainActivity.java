@@ -26,6 +26,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goBookmark(View view){
-        startActivity(new Intent(this, BookmarkActivity.class));
+        startActivity(new Intent(this, BookmarkFragment.class));
     }
 }
