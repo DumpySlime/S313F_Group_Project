@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
-
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;

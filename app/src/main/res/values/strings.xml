@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">PublicTransportApp</string>
     <string name="bookmark_button">Bookmark</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="busList_button">Bus List</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="route_id">Route</string>
+    <string name="stop_name">Stop</string>
+    <string name="dest_name">Dest</string>
+    <string name="eta">eta</string>
 </resources>
