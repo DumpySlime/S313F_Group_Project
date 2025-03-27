@@ -19,6 +19,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.publictransportapp.model.BusRowModel;
 import com.example.publictransportapp.model.RouteListModel;
 import com.example.publictransportapp.model.StopListModel;
@@ -67,7 +68,7 @@ public class BusListFragment extends Fragment implements EtaRetriever{
         busRecyclerList = new ArrayList<>();
         busListAdapter = new BusListAdapter(busRecyclerList);
         busListView = view.findViewById(R.id.bus_list_recycler_view);
-
+        requestQueue = Volley.newRequestQueue(getContext());
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(view.getContext());
         // set up location fetching interval
