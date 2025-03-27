@@ -1,19 +1,14 @@
 package com.example.publictransportapp.model;
 
-import com.android.volley.toolbox.JsonObjectRequest;
-
 public class EtaRetrieverModel {
     private int[] eta;
-    private JsonObjectRequest jsonObjectRequest;
 
-    public EtaRetrieverModel(int[] eta, JsonObjectRequest jsonObjectRequest) {
+    public EtaRetrieverModel(int[] eta) {
         this.eta = eta;
-        this.jsonObjectRequest = jsonObjectRequest;
     }
 
     public EtaRetrieverModel(){
         this.eta = new int[] {-1,-1,-1};
-        this.jsonObjectRequest = null;
     }
 
     public int[] getEta() {
@@ -21,12 +16,9 @@ public class EtaRetrieverModel {
     }
 
     public int getEta(int pos) {
-        return eta[pos - 1];
+        return eta[pos];
     }
 
-    public JsonObjectRequest getJsonObjectRequest() {
-        return jsonObjectRequest;
-    }
     public void setEta(int[] eta) {
         this.eta = eta;
     }
@@ -35,7 +27,4 @@ public class EtaRetrieverModel {
         this.eta[pos] = eta;
     }
 
-    public void setJsonObjectRequest(JsonObjectRequest jsonObjectRequest) {
-        this.jsonObjectRequest = jsonObjectRequest;
-    }
 }

@@ -77,11 +77,10 @@ public class BusListFragment extends Fragment implements EtaRetriever{
                 .setWaitForAccurateLocation(false)              // Want Accurate location updates make it true or you get approximate updates
                 .setMaxUpdateDelayMillis(100)                   // Sets the longest a location update may be delayed.
                 .build();
-        getUserLocation();
         getAllRouteData();
         getAllStopData();
 
-        setUpBusList();
+        setUpBusList(view);
     }
 
 
@@ -185,17 +184,48 @@ public class BusListFragment extends Fragment implements EtaRetriever{
         }
     }
 
-    private void setUpBusList() {
+    private void setUpBusList(View view) {
         // search for 200m radius of route if have permission
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            getRelevantBusRow();
+            getUserLocation();
+            for (int i = 0; i < stopList.size(); i++) {
+                if (calculateDistance(stopList.get(i).getLat(), stopList.get(i).getLon()) > 0.2) {
+                    addBusRow(i, view);
+                }
+            }
         } else { // display all route in ascending with origin as stop
-
+            for (int i = 0; i < routeList.size(); i++) {
+                addBusRow(i, view);
+            }
         }
     }
 
-    private void getRelevantBusRow(){
+    private void addBusRow(int i, View view) {
+        String stop = routeList.get(i).getOrig_en();
+        String dest = routeList.get(i).getDest_en();
+        String route = routeList.get(i).getRoute();
+        int serviceType = routeList.get(i).getService_type();
+        busRecyclerList.add(new BusRowModel(stop, dest, route, EtaRetriever.getRouteStopETA(getStopId(stop), route, serviceType, view, requestQueue).getEta(0)));
+    }
 
+    private String getStopId(String stop) {
+        String stopId = null;
+        while (stopId == null) {
+            int i = 0;
+            if (stopList.get(i).getName_en() == stop) {
+                stopId = stopList.get(i).getStopId();
+            }
+        }
+        return stopId;
+    }
+
+    private double calculateDistance(double lat, double lon) {
+        double userLatR = Math.toRadians(userLat),
+                userLongR = Math.toRadians(userLong),
+                latR = Math.toRadians(lat),
+                lonR = Math.toRadians(lon);
+        return Math.acos((Math.sin(userLatR) * Math.sin(latR)
+                + Math.cos(userLongR) * Math.cos(lonR) * Math.cos(userLongR - lonR))) * 6371;
     }
 }
