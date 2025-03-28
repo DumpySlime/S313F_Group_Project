@@ -1,5 +1,6 @@
 package com.example.publictransportapp;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,16 +13,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.publictransportapp.model.BusRowModel;
+import com.example.publictransportapp.model.RouteEtaModel;
 
 import java.util.ArrayList;
 
 public class BusListAdapter extends RecyclerView.Adapter<BusListAdapter.MyViewHolder>{
 
-    private ArrayList<BusRowModel> busRowModels;
+    private ArrayList<RouteEtaModel> busList;
 
-    public BusListAdapter(ArrayList<BusRowModel> busRowModels) {
-        this.busRowModels = busRowModels;
+    public BusListAdapter(ArrayList<RouteEtaModel> busList) {
+        this.busList = busList;
     }
 
     @NonNull
@@ -33,11 +34,11 @@ public class BusListAdapter extends RecyclerView.Adapter<BusListAdapter.MyViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull BusListAdapter.MyViewHolder holder, int position) {
-        holder.route.setText(busRowModels.get(position).getRoute());
-        holder.stop.setText(busRowModels.get(position).getStop());
-        holder.dest.setText(busRowModels.get(position).getDest());
-        holder.eta.setText(busRowModels.get(position).getEta());
+    public void onBindViewHolder(@NonNull BusListAdapter.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        holder.route.setText(busList.get(position).getRoute());
+        holder.stop.setText(busList.get(position).getStop());
+        holder.dest.setText(busList.get(position).getDest());
+        holder.eta.setText(busList.get(position).getEta1());
         holder.routeEtaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -45,8 +46,8 @@ public class BusListAdapter extends RecyclerView.Adapter<BusListAdapter.MyViewHo
                 RouteEtaFragment routeEtaFragment = new RouteEtaFragment();
                 Bundle bundle = new Bundle();
 
-                bundle.putString("direction", busRowModels.get(position).getDirection());
-                bundle.putInt("serviceType", busRowModels.get(position).getServiceType());
+                bundle.putString("direction", busList.get(position).getDirection());
+                bundle.putInt("serviceType", busList.get(position).getServiceType());
                 routeEtaFragment.setArguments(bundle);
 
                 AppCompatActivity appCompatActivity = (AppCompatActivity) view.getContext();
@@ -60,7 +61,7 @@ public class BusListAdapter extends RecyclerView.Adapter<BusListAdapter.MyViewHo
 
     @Override
     public int getItemCount() {
-        return busRowModels.size();
+        return busList.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{

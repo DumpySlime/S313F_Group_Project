@@ -1,5 +1,7 @@
 package com.example.publictransportapp.model;
 
+import androidx.annotation.NonNull;
+
 public class StopListModel {
     private String stopId,
         name_en,
@@ -39,5 +41,17 @@ public class StopListModel {
 
     public double getLon() {
         return lon;
+    }
+
+    @Override
+    public String toString() {
+        return "StopListModel{" +
+                "stopId='" + stopId + '\'' +
+                ", name_en='" + name_en + '\'' +
+                ", name_tc='" + name_tc + '\'' +
+                ", name_sc='" + name_sc + '\'' +
+                ", lat=" + lat +
+                ", lon=" + lon +
+                '}';
     }
 }

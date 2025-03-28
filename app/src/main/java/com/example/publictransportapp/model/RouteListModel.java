@@ -1,5 +1,7 @@
 package com.example.publictransportapp.model;
 
+import org.jetbrains.annotations.NotNull;
+
 public class RouteListModel extends RouteSearchModel {
 
     private String orig_en,
@@ -41,5 +43,17 @@ public class RouteListModel extends RouteSearchModel {
 
     public String getDest_sc() {
         return dest_sc;
+    }
+
+    @Override
+    public String toString() {
+        return "RouteListModel{" +
+                "orig_en='" + orig_en + '\'' +
+                ", orig_tc='" + orig_tc + '\'' +
+                ", orig_sc='" + orig_sc + '\'' +
+                ", dest_en='" + dest_en + '\'' +
+                ", dest_tc='" + dest_tc + '\'' +
+                ", dest_sc='" + dest_sc + '\'' +
+                '}';
     }
 }

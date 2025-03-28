@@ -23,7 +23,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.publictransportapp.model.BusRowModel;
+import com.example.publictransportapp.model.RouteEtaModel;
 import com.example.publictransportapp.model.RouteListModel;
 import com.example.publictransportapp.model.StopListModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -36,11 +36,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
-public class BusListFragment extends Fragment implements EtaRetriever{
+public class BusListFragment extends Fragment implements EtaCallback {
 
-    private ArrayList<BusRowModel> busRecyclerList;
+    private ArrayList<RouteEtaModel> busRecyclerList;
     private ArrayList<RouteListModel> routeList;
     private ArrayList<StopListModel> stopList;
     private RequestQueue requestQueue;
@@ -69,8 +68,6 @@ public class BusListFragment extends Fragment implements EtaRetriever{
         busListView.setAdapter(busListAdapter);
 
         requestQueue = Volley.newRequestQueue(view.getContext());
-
-        refreshData();
         return view;
     }
 
@@ -100,6 +97,8 @@ public class BusListFragment extends Fragment implements EtaRetriever{
                 handler.postDelayed(this, 60000);
             }
         };
+
+        refreshData();
     }
 
     // refresh data
@@ -143,8 +142,9 @@ public class BusListFragment extends Fragment implements EtaRetriever{
                                     stop.getDouble("lat"),
                                     stop.getDouble("long")));
                         }
+                        Log.d("StopApi Data", stopList.toString());
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        Log.e("BusListFragment", e.toString());
                         if (getView() != null)
                             Toast.makeText(getView().getContext(), "Error parsing stop data", Toast.LENGTH_SHORT).show();
                     }
@@ -155,8 +155,6 @@ public class BusListFragment extends Fragment implements EtaRetriever{
                         Toast.makeText(getView().getContext(), "Error fetching stop data", Toast.LENGTH_SHORT).show();
                 });
         Log.d("Fetch Data", "finish getAllStopData()");
-        //Log.d("StopList", stopList.toString());
-        //Log.d("StopList Size", String.valueOf(stopList.size()));
         requestQueue.add(jsonObjectRequest);
     }
 
@@ -184,8 +182,9 @@ public class BusListFragment extends Fragment implements EtaRetriever{
                                         route.getString("dest_sc"),
                                         route.getInt("service_type")));
                             }
+                            Log.d("RouteApi Data", routeList.toString());
                         } catch (JSONException e) {
-                            e.printStackTrace();
+                            Log.e("BusListFragment", e.toString());
                             if (getView() != null)
                                 Toast.makeText(getView().getContext(), "Error parsing route data", Toast.LENGTH_SHORT).show();
                         }
@@ -223,6 +222,7 @@ public class BusListFragment extends Fragment implements EtaRetriever{
                         });
             }
         }
+        Log.d("Fetch User Location", "user_lat: " + userLat + "user_long" + userLong);
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -244,32 +244,41 @@ public class BusListFragment extends Fragment implements EtaRetriever{
             }
         }
         busListAdapter.notifyDataSetChanged();
+        Log.d("Display Bus List", busRecyclerList.toString());
     }
-
     private void addBusRow(int i) {
         String stop = routeList.get(i).getOrig_en();
         String dest = routeList.get(i).getDest_en();
         String route = routeList.get(i).getRoute();
         int serviceType = routeList.get(i).getServiceType();
-        busRecyclerList.add(new BusRowModel(
-                stop,
-                dest,
-                route,
-                EtaRetriever.getRouteStopETA(getStopId(stop), route, serviceType, getView(), requestQueue).getEta(0),
-                routeList.get(i).getDirection(),
-                routeList.get(i).getServiceType()));
-    }
+        String direction = routeList.get(i).getDirection();
+        String stopId = stopList.get(i).getStopId();
 
-    private String getStopId(String stop) {
-        String stopId = null;
-        int i = 0;
-        while ((stopId == null) && (i <= stopList.size())) {
-            if (Objects.equals(stopList.get(i).getName_en(), stop)) {
-                stopId = stopList.get(i).getStopId();
-            }
-            i++;
+        if (stopId != null) {
+            EtaRetriever etaRetriever = new EtaRetriever(requestQueue);
+            etaRetriever.getEta(stopId, route, serviceType, dest, direction, new EtaCallback() {
+                @Override
+                public void onEtaReceived(RouteEtaModel routeEtaModel) {
+                    Log.e("BusListFragment", "ETA received: " + routeEtaModel.toString());
+                    busRecyclerList.add(new RouteEtaModel(
+                            route,
+                            routeList.get(i).getDirection(),
+                            routeList.get(i).getServiceType(),
+                            stop,
+                            dest,
+                            routeEtaModel.getEta1()
+                    ));
+                    busListAdapter.notifyDataSetChanged(); // Notify adapter after adding
+                }
+
+                @Override
+                public void onError(String error) {
+                    Log.e("BusListFragment", "Error: " + error);
+                }
+            });
+        } else {
+            Log.e("BusListFragment", "Stop ID not found for stop: " + stop);
         }
-        return stopId;
     }
 
     private double calculateDistance(double lat, double lon) {
@@ -279,5 +288,16 @@ public class BusListFragment extends Fragment implements EtaRetriever{
                 lonR = Math.toRadians(lon);
         return Math.acos((Math.sin(userLatR) * Math.sin(latR)
                 + Math.cos(userLongR) * Math.cos(lonR) * Math.cos(userLongR - lonR))) * 6371;
+    }
+
+    @Override
+    public void onEtaReceived(RouteEtaModel routeEtaModel) {
+        Log.d("BusListFragment", "ETA received: " + routeEtaModel.toString());
+
+    }
+
+    @Override
+    public void onError(String error) {
+        Log.d("BusListFragment", "Error");
     }
 }

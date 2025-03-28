@@ -22,4 +22,13 @@ public class RouteSearchModel {
     public int getServiceType() {
         return serviceType;
     }
+
+    @Override
+    public String toString() {
+        return "RouteSearchModel{" +
+                "route='" + route + '\'' +
+                ", direction='" + direction + '\'' +
+                ", serviceType=" + serviceType +
+                '}';
+    }
 }
