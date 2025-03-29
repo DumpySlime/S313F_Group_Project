@@ -7,48 +7,70 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@android:color/background_light">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Bookmarked Stops"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="8dp"
+            android:textColor="@android:color/holo_blue_dark" />
 
         <LinearLayout
             android:id="@+id/stop_list_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="8dp" />
+            android:paddingTop="8dp"
+            android:background="@android:color/white"
+            android:padding="10dp"
+            android:elevation="2dp"
+            android:layout_marginBottom="16dp" />
 
         <Button
             android:id="@+id/btn_add_stop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Stop" />
+            android:text="Add Stop"
+            android:background="@android:color/holo_green_light"
+            android:textColor="@android:color/white"
+            android:padding="10dp"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="start" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Bookmarked Places"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
-            android:paddingTop="16dp" />
+            android:paddingBottom="8dp"
+            android:textColor="@android:color/holo_blue_dark" />
 
         <LinearLayout
             android:id="@+id/place_list_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="8dp" />
+            android:paddingTop="8dp"
+            android:background="@android:color/white"
+            android:padding="10dp"
+            android:elevation="2dp"
+            android:layout_marginBottom="16dp" />
 
         <Button
             android:id="@+id/btn_add_place"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Place" />
+            android:text="Add Place"
+            android:background="@android:color/holo_green_light"
+            android:textColor="@android:color/white"
+            android:padding="10dp"
+            android:layout_marginBottom="16dp"
+            android:layout_gravity="start" />
 
     </LinearLayout>
 </ScrollView>
