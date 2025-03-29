@@ -27,7 +27,7 @@
         android:layout_marginStart="110dp"
         android:layout_marginTop="10dp"
         android:text="@string/stop_name"
-        android:textSize="10pt"/>
+        android:textSize="9pt"/>
 
     <TextView
         android:id="@+id/busListRow_dest_name"
@@ -36,7 +36,7 @@
         android:layout_marginStart="115dp"
         android:layout_marginTop="40dp"
         android:text="@string/dest_name"
-        android:textSize="8pt" />
+        android:textSize="7pt" />
 
     <TextView
         android:id="@+id/busListRow_eta"
