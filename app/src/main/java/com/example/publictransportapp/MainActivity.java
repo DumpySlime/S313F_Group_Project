@@ -11,13 +11,36 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.publictransportapp.model.RouteListModel;
+import com.example.publictransportapp.model.RouteStopListModel;
+import com.example.publictransportapp.model.StopListModel;
 import com.google.android.material.tabs.TabLayout;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     // Declare the bookmark button
     FrameLayout fragmentCotainer;
     TabLayout menuBar;
     Button button;
+
+    ArrayList<RouteListModel> routeList;
+    ArrayList<RouteStopListModel> routeStopList;
+    ArrayList<StopListModel> stopList;
+    final String ALL_ROUTE_URL = "https://data.etabus.gov.hk/v1/transport/kmb/route/";
+    final String ALL_STOP_URL = "https://data.etabus.gov.hk/v1/transport/kmb/stop/";
+    final String ALL_ROUTE_STOP_URL = "https://data.etabus.gov.hk/v1/transport/kmb/route-stop/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +89,105 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void goBookmark(View view){
-        startActivity(new Intent(this, BookmarkFragment.class));
+    class fetchData extends Thread {
+
+
+
+        @Override
+        public void run() {
+            try {
+
+                // get route data
+                URL url = new URL(ALL_ROUTE_URL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                String data = "";
+                String line = "";
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    data += line;
+                }
+
+                if (!data.isEmpty()) {
+                    JSONObject jsonObject = new JSONObject(data);
+                    JSONArray routes = jsonObject.getJSONArray("data");
+                    routeList.clear();
+                    for (int i = 0; i < routes.length(); i++) {
+                        JSONObject route = routes.getJSONObject(i);
+                        routeList.add(new RouteListModel(
+                                route.getString("route"),
+                                route.getString("bound"),
+                                route.getString("orig_en"),
+                                route.getString("orig_tc"),
+                                route.getString("orig_sc"),
+                                route.getString("dest_en"),
+                                route.getString("dest_tc"),
+                                route.getString("dest_sc"),
+                                route.getInt("service_type")));
+                    }
+                }
+
+                // get stop data
+                url = new URL(ALL_STOP_URL);
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+                inputStream = httpURLConnection.getInputStream();
+                bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                data = "";
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    data += line;
+                }
+
+                if (!data.isEmpty()) {
+                    JSONObject jsonObject = new JSONObject(data);
+                    JSONArray stops = jsonObject.getJSONArray("data");
+                    routeList.clear();
+                    for (int i = 0; i < stops.length(); i++) {
+                        JSONObject stop = stops.getJSONObject(i);
+                        stopList.add(new StopListModel(
+                                stop.getString("stop"),
+                                stop.getString("name_en"),
+                                stop.getString("name_tc"),
+                                stop.getString("name_sc"),
+                                stop.getDouble("lat"),
+                                stop.getDouble("long")));
+                    }
+                }
+
+                // get route-stop data
+                url = new URL(ALL_ROUTE_STOP_URL);
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+                inputStream = httpURLConnection.getInputStream();
+                bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                data = "";
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    data += line;
+                }
+
+                if (!data.isEmpty()) {
+                    JSONObject jsonObject = new JSONObject(data);
+                    JSONArray routeStops = jsonObject.getJSONArray("data");
+                    for (int i = 0; i < routeStops.length(); i++) {
+                        JSONObject route = routeStops.getJSONObject(i);
+                        routeStopList.add(new RouteStopListModel(
+                                route.getString("route"),
+                                route.getString("bound"),
+                                route.getInt("service_type"),
+                                route.getString("seq"),
+                                route.getString("stop")
+                        ));
+                    }
+                }
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
     }
 }

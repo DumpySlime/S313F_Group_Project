@@ -47,7 +47,7 @@ public class RouteListModel extends RouteSearchModel {
 
     @Override
     public String toString() {
-        return "RouteListModel{" +
+        return super.toString() + " RouteListModel{" +
                 "orig_en='" + orig_en + '\'' +
                 ", orig_tc='" + orig_tc + '\'' +
                 ", orig_sc='" + orig_sc + '\'' +

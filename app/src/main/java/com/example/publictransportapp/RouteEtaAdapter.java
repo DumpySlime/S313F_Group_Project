@@ -30,7 +30,7 @@ public class RouteEtaAdapter extends RecyclerView.Adapter<RouteEtaAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull RouteEtaAdapter.MyViewHolder holder, int position) {
-        holder.stop.setText(routeEtaModels.get(position).getStop());
+        holder.stop.setText(routeEtaModels.get(position).getStopId());
         holder.eta1.setText(routeEtaModels.get(position).getEta1());
         holder.eta2.setText(routeEtaModels.get(position).getEta2());
         holder.eta3.setText(routeEtaModels.get(position).getEta3());
