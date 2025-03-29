@@ -28,24 +28,27 @@ public class EtaRetriever {
     }
 
     public void getEta(String stopId, String routeId, int serviceType, String dest, String direction, EtaCallback callback) {
-        String ROUTE_STOP_ETA_URL = ETA_URL + "/" + stopId + "/" + routeId + "/" + serviceType;
+        String ROUTE_STOP_ETA_URL = ETA_URL + stopId + "/" + routeId + "/" + serviceType;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, ROUTE_STOP_ETA_URL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject res) {
                         try {
-                            Log.d("in EtaRetriever", "APIResponse: " + res.toString());
+                            // Log.d("in EtaRetriever", "Url passing: " + ROUTE_STOP_ETA_URL);
+                            // Log.d("in EtaRetriever", "APIResponse: " + res.toString());
                             JSONArray etaData = res.getJSONArray("data");
-                            if (etaData != null) {
+                            if (etaData.length() > 0) {
+                                Log.d("in EtaRetriever", "not null data url passing: " + ROUTE_STOP_ETA_URL);
+                                Log.d("in EtaRetriever", "APIResponse: " + etaData.toString());
                                 int j = 0;
                                 for (int i = 0; (i < etaData.length()) && (j < 3); i++) {
                                     JSONObject eta = etaData.getJSONObject(i);
-                                    String etaString = res.optString("eta", "null_eta");
-                                    String routeDest = eta.optString("dest_en", "null_dest");
+                                    String etaString = eta.getString("eta");
+                                    String routeDest = eta.getString("dest_en");
                                     Log.d("ETA String", "etaString: " + etaString); // Log etaString value
 
                                     // Check if etaString is not null and not empty
-                                    if ((routeDest.equals(dest)) && (!etaString.equals("null_eta"))) {
+                                    if ((routeDest.equals(dest)) && (!etaString.equals("null"))) {
                                         Log.d("in EtaRetriever", "Valid ETA found: " + etaString);
                                         Log.d("in EtaRetriever", "Valid Destination found: " + routeDest);
 

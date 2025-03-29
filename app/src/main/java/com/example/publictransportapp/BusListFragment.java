@@ -259,16 +259,17 @@ public class BusListFragment extends Fragment implements EtaCallback {
             etaRetriever.getEta(stopId, route, serviceType, dest, direction, new EtaCallback() {
                 @Override
                 public void onEtaReceived(RouteEtaModel routeEtaModel) {
-                    Log.e("BusListFragment", "ETA received: " + routeEtaModel.toString());
+                    Log.d("BusListFragment", "ETA received: " + routeEtaModel.toString());
                     busRecyclerList.add(new RouteEtaModel(
                             route,
-                            routeList.get(i).getDirection(),
-                            routeList.get(i).getServiceType(),
+                            direction,
+                            serviceType,
                             stop,
                             dest,
                             routeEtaModel.getEta1()
                     ));
                     busListAdapter.notifyDataSetChanged(); // Notify adapter after adding
+                    Log.d("BusListFragment", "ETA notified");
                 }
 
                 @Override

@@ -38,7 +38,7 @@ public class BusListAdapter extends RecyclerView.Adapter<BusListAdapter.MyViewHo
         holder.route.setText(busList.get(position).getRoute());
         holder.stop.setText(busList.get(position).getStop());
         holder.dest.setText(busList.get(position).getDest());
-        holder.eta.setText(busList.get(position).getEta1());
+        holder.eta.setText(String.valueOf(busList.get(position).getEta1()));
         holder.routeEtaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
