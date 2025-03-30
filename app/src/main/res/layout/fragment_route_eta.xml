@@ -5,9 +5,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/route_eta_recycle_view"
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/route_eta_map"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="0.4"/>
+    <ListView
+        android:id="@+id/route_eta_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.6"/>
 
 </LinearLayout>
