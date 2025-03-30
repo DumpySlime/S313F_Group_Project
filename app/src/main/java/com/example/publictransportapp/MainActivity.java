@@ -1,8 +1,9 @@
 package com.example.publictransportapp;
 
-import android.content.Intent;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.publictransportapp.model.DataViewModel;
 import com.example.publictransportapp.model.RouteListModel;
 import com.example.publictransportapp.model.RouteStopListModel;
 import com.example.publictransportapp.model.StopListModel;
@@ -34,10 +36,14 @@ public class MainActivity extends AppCompatActivity {
     FrameLayout fragmentCotainer;
     TabLayout menuBar;
     Button button;
+    ProgressDialog progressDialog;
 
     ArrayList<RouteListModel> routeList;
     ArrayList<RouteStopListModel> routeStopList;
     ArrayList<StopListModel> stopList;
+
+    private DataViewModel dataViewModel;
+
     final String ALL_ROUTE_URL = "https://data.etabus.gov.hk/v1/transport/kmb/route/";
     final String ALL_STOP_URL = "https://data.etabus.gov.hk/v1/transport/kmb/stop/";
     final String ALL_ROUTE_STOP_URL = "https://data.etabus.gov.hk/v1/transport/kmb/route-stop/";
@@ -51,6 +57,14 @@ public class MainActivity extends AppCompatActivity {
         menuBar = findViewById(R.id.menu_bar);
         // initialize bookmark button
         button = findViewById(R.id.bookmark_tab);
+
+        // initialize data array
+        routeList = new ArrayList<>();
+        routeStopList = new ArrayList<>();
+        stopList = new ArrayList<>();
+
+        // start fetching data
+        new FetchData().execute();
 
         //load fragment_bus_list when start app
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new BusListFragment())
@@ -89,15 +103,29 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    class fetchData extends Thread {
-
+    private class FetchData extends AsyncTask<Void, Void, Void> {
 
 
         @Override
-        public void run() {
-            try {
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setMessage("fetching data");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
 
-                // get route data
+        @Override
+        protected Void doInBackground(Void... voids) {
+            fetchRoutes();
+            fetchStops();
+            fetchRouteStops();
+            return null;
+        }
+
+        // get route data
+        private void fetchRoutes() {
+            try {
                 URL url = new URL(ALL_ROUTE_URL);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 InputStream inputStream = httpURLConnection.getInputStream();
@@ -127,13 +155,25 @@ public class MainActivity extends AppCompatActivity {
                                 route.getInt("service_type")));
                     }
                 }
+            } catch (MalformedURLException me) {
+                Log.e("MainActivity", me.toString());
+            } catch (JSONException je) {
+                Log.e("MainActivity", je.toString());
+            } catch (IOException ie) {
+                Log.e("MainActivity", ie.toString());
+            }
+        }
 
+        private void fetchStops() {
+
+            try {
                 // get stop data
-                url = new URL(ALL_STOP_URL);
-                httpURLConnection = (HttpURLConnection) url.openConnection();
-                inputStream = httpURLConnection.getInputStream();
-                bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                data = "";
+                URL url = new URL(ALL_STOP_URL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                String data = "";
+                String line = "";
 
                 while ((line = bufferedReader.readLine()) != null) {
                     data += line;
@@ -154,13 +194,24 @@ public class MainActivity extends AppCompatActivity {
                                 stop.getDouble("long")));
                     }
                 }
+            } catch (MalformedURLException me) {
+                Log.e("MainActivity", me.toString());
+            } catch (JSONException je) {
+                Log.e("MainActivity", je.toString());
+            } catch (IOException ie) {
+                Log.e("MainActivity", ie.toString());
+            }
+        }
 
+        private void fetchRouteStops() {
+            try {
                 // get route-stop data
-                url = new URL(ALL_ROUTE_STOP_URL);
-                httpURLConnection = (HttpURLConnection) url.openConnection();
-                inputStream = httpURLConnection.getInputStream();
-                bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                data = "";
+                URL url = new URL(ALL_STOP_URL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                InputStream inputStream = httpURLConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+                String data = "";
+                String line = "";
 
                 while ((line = bufferedReader.readLine()) != null) {
                     data += line;
@@ -180,14 +231,26 @@ public class MainActivity extends AppCompatActivity {
                         ));
                     }
                 }
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
+            } catch (MalformedURLException me) {
+                Log.e("MainActivity", me.toString());
+            } catch (JSONException je) {
+                Log.e("MainActivity", je.toString());
+            } catch (IOException ie) {
+                Log.e("MainActivity", ie.toString());
             }
+        }
 
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            dataViewModel.setRouteList(routeList);
+            dataViewModel.setStopList(stopList);
+            dataViewModel.setRouteStopList(routeStopList);
+
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
         }
     }
 }
