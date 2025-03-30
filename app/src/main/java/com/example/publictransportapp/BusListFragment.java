@@ -9,6 +9,7 @@ import android.Manifest;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +25,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.publictransportapp.model.DataViewModel;
 import com.example.publictransportapp.model.RouteEtaModel;
 import com.example.publictransportapp.model.RouteListModel;
 import com.example.publictransportapp.model.RouteSearchModel;
@@ -51,6 +53,8 @@ public class BusListFragment extends Fragment implements EtaCallback {
     private RequestQueue requestQueue;
     private BusListAdapter busListAdapter;
 
+    private DataViewModel dataViewModel;
+
     private FusedLocationProviderClient fusedLocationClient;
     private double userLat, userLong;
 
@@ -70,7 +74,7 @@ public class BusListFragment extends Fragment implements EtaCallback {
         busListView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         busRecyclerList = new ArrayList<>();
-        busListAdapter = new BusListAdapter(busRecyclerList, stopList);
+        busListAdapter = new BusListAdapter(busRecyclerList, stopList, routeList);
         busListView.setAdapter(busListAdapter);
 
         requestQueue = Volley.newRequestQueue(view.getContext());
@@ -79,7 +83,7 @@ public class BusListFragment extends Fragment implements EtaCallback {
         stopList = new ArrayList<>();
         routeStopList = new ArrayList<>();
 
-        getInitialData();
+        //getInitialData();
 
         return view;
     }
@@ -87,6 +91,35 @@ public class BusListFragment extends Fragment implements EtaCallback {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+        // Change data of Route List accordingly
+        dataViewModel.getRouteList().observe(getViewLifecycleOwner(), new Observer<ArrayList<RouteListModel>>() {
+            @Override
+            public void onChanged(ArrayList<RouteListModel> routes) {
+                routeList = routes;
+                Log.d("BusListFragment", "routeList updated: " + routeList.toString());
+            }
+        });
+        // Change data of Stop List accordingly
+        dataViewModel.getStopList().observe(getViewLifecycleOwner(), new Observer<ArrayList<StopListModel>>() {
+            @Override
+            public void onChanged(ArrayList<StopListModel> stops) {
+                stopList = stops;
+                Log.d("BusListFragment", "stopList updated: " + stopList.toString());
+            }
+        });
+        // Change data of Route-Stop List accordingly
+        dataViewModel.getRouteStopList().observe(getViewLifecycleOwner(), new Observer<ArrayList<RouteStopListModel>>() {
+            @Override
+            public void onChanged(ArrayList<RouteStopListModel> routeStops) {
+                routeStopList = routeStops;
+                Log.d("BusListFragment", "routeStopList updated: " + routeStopList.toString());
+
+                new FetchEtaTask(routeStopList, getUserLocation()).execute();
+            }
+        });
+
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(view.getContext());
         // set up location fetching interval
@@ -102,12 +135,26 @@ public class BusListFragment extends Fragment implements EtaCallback {
         runnable = new Runnable() {
             @Override
             public void run() {
-                setUpBusList();
+                new FetchEtaTask(routeStopList, getUserLocation()).execute();
                 handler.postDelayed(this, INTERVAL_MILLIS);
             }
         };
     }
 
+    // start data refresh
+    @Override
+    public void onResume() {
+        super.onResume();
+        handler.post(runnable);
+    }
+
+    // stop data refresh
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacks(runnable);
+    }
+/*
     private void getInitialData() {
         final int[] counter = {0};
         getAllRouteData(() -> {
@@ -131,21 +178,6 @@ public class BusListFragment extends Fragment implements EtaCallback {
                 setUpBusList();
             }
         });
-    }
-
-    // start data refresh
-    @Override
-    public void onResume() {
-        super.onResume();
-        handler.post(runnable);
-    }
-
-    // stop data refresh
-    @Override
-    public void onPause() {
-        super.onPause();
-        handler.removeCallbacks(runnable);
-    }
 
     private void getAllStopData(DataFetchCallback callback) {
         final String ALL_STOP_URL = "https://data.etabus.gov.hk/v1/transport/kmb/stop/";
@@ -269,9 +301,10 @@ public class BusListFragment extends Fragment implements EtaCallback {
         //Log.d("RouteStopList Size", String.valueOf(routeStopList.size()));
         requestQueue.add(jsonObjectRequest);
     }
-
-    private void getUserLocation() {
+*/
+    private boolean getUserLocation() {
         assert getActivity() != null;
+        boolean permission = false;
         // check for permission on location access
         if (getView() != null) {
             Log.d("in BusListFragment", "getView() not null");
@@ -291,11 +324,13 @@ public class BusListFragment extends Fragment implements EtaCallback {
                                 userLong = location.getLongitude();
                             }
                         });
+                permission = true;
                 Log.d("Fetch User Location", "user_lat: " + userLat + "user_long" + userLong);
             }
         }
+        return permission;
     }
-
+/*
     @SuppressLint("NotifyDataSetChanged")
     private void setUpBusList() {
         // search for 200m radius of route if have permission
@@ -307,13 +342,13 @@ public class BusListFragment extends Fragment implements EtaCallback {
                 new FetchEtaTask(routeStopList, true).execute();
             } else { // display all route in ascending with origin as stop
                 Log.d("in BusListFragment", "get all route| Size: " + routeList.size());
-                new FetchEtaTask(routeList, false).execute();
+                new FetchEtaTask(routeStopList, false).execute();
             }
         }
         busListAdapter.updateData(busRecyclerList);
         //Log.d("Display Bus List", busRecyclerList.toString());
     }
-
+*/
     private double calculateDistance(double lat, double lon) {
         double userLatR = Math.toRadians(userLat),
                 userLongR = Math.toRadians(userLong),
@@ -336,97 +371,73 @@ public class BusListFragment extends Fragment implements EtaCallback {
 
     private class FetchEtaTask extends AsyncTask<Void, Void, List<RouteEtaModel>> {
 
-        private List<RouteSearchModel> displayedRoutes;
+        private List<RouteStopListModel> displayedRoutes;
         private boolean useUserLocation;
 
-        private String stop, dest, route, direction;
-        private int serviceType;
-        private StopListModel stopObject;
-
-        public FetchEtaTask(List<RouteSearchModel> displayedRoutes, boolean useUserLocation) {
+        public FetchEtaTask(List<RouteStopListModel> displayedRoutes, boolean useUserLocation) {
             this.displayedRoutes = displayedRoutes;
             this.useUserLocation = useUserLocation;
-            this.stopObject = null;
         }
 
         @Override
         protected List<RouteEtaModel> doInBackground(Void... voids) {
-            List<RouteEtaModel> etas = new ArrayList<>();
             Log.d("BusListFragment.FetchEtaTask", "Bus Row List: " + displayedRoutes.toString());
-            for (RouteStopListModel routes : displayedRoutes) {
-                boolean haveStopObject = false;
-                // find stop object
-                for (StopListModel stopListModel : stopList) {
-                    if (stopListModel.getStopId().equals(routes.getStopId())) {
-                        haveStopObject = true;
-                        stopObject = stopListModel;
-                        break;
-                    }
-                }
-                stop = routes.getOrig_en();
-                dest = routes.getDest_en();
-                route = routes.getRoute();
-                serviceType = routes.getServiceType();
-                direction = routes.getDirection();
-                // search stopId
-                Log.d("BusListFragment.FetchEtaTask", "Target stop name: " + stop);
-                for (StopListModel stops : stopList) {
-                    //Log.d("BusListFragment.FetchEtaTask", "Route Orig: " + stop + ", Stop Name: " + stops.getName_en());
-                    if (stops.getName_en().equals(stop)) {
-                        stopObject = stops;
-                        haveStopObject = true;
-                        break;
-                    }
-                }
-                Log.d("BusListFragment.FetchEtaTask", "Result: " + stopObject.getStopId());
 
-                if (haveStopObject) {
-                    Log.d("BusListFragment.FetchEtaTack", "Stop Object found: " + stopObject.toString());
-                    if (useUserLocation) {
-                        if (calculateDistance(stopObject.getLat(), stopObject.getLon()) > 0.2) {
-                            fetchEtaForRoute(etas, stopObject.getStopId(), route, serviceType, dest, direction);
-                        }
-                    } else {
-                        fetchEtaForRoute(etas, stopObject.getStopId(), route, serviceType, dest, direction);
+            // Populate the recyclerView
+            for (RouteStopListModel routeStop : displayedRoutes) {
+                String stopId = routeStop.getStopId();
+                Log.d("BusListFragment.FetchEtaTask", "Target stopId: " + stopId);
+                String route = routeStop.getRoute();
+                String direction = routeStop.getDirection();
+                int serviceType = routeStop.getServiceType();
+                // Get destination name
+                String destName = "Unknown Destination";
+                for (RouteListModel routeModel : routeList) {
+                    if ((routeModel.getRoute().equals(routeStop.getRoute())) &&
+                            (routeModel.getDirection().equals(routeStop.getDirection())) &&
+                            (routeModel.getServiceType() == routeStop.getServiceType())) {
+                        destName = routeModel.getDest_en();
+                        break;
+                    }
+                }
+
+                // Get stop latitude and longitude
+                double lat = 0, lon = 0;
+                for (StopListModel stop : stopList) {
+                    if (stop.getStopId().equals(routeStop.getStopId())) {
+                        lat = stop.getLat();
+                        lon = stop.getLon();
+                        break;
+                    }
+                }
+
+                if (useUserLocation) {
+                    if (calculateDistance(lat, lon) > 0.2) {
+                        fetchEtaForRoute(stopId, route, serviceType, destName, direction);
                     }
                 } else {
-                    Log.e("BusListFragment.FetchEtaTack", "Stop id not found");
+                    fetchEtaForRoute(stopId, route, serviceType, destName, direction);
                 }
             }
-            return etas;
+            return null;
         }
 
-        private void fetchEtaForRoute(List<RouteEtaModel> etas, String stopId, String route, int serviceType, String dest, String direction) {
+        private void fetchEtaForRoute(String stopId, String route, int serviceType, String dest, String direction) {
             EtaRetriever etaRetriever = new EtaRetriever(requestQueue);
             CountDownLatch latch = new CountDownLatch(1);
 
             etaRetriever.getEta(stopId, route, serviceType, dest, direction, new EtaCallback() {
                 @Override
-                public void onEtaReceived(RouteEtaModel routeEtaModel) {
+                public void onEtaReceived(RouteEtaModel newBusRow) {
                     // Log.d("BusListFragment", "ETA received: " + routeEtaModel.toString());
-                    boolean exists = false;
-                    for (RouteEtaModel model : busRecyclerList) {
-                        if (model.getRoute().equals(route) && model.getDirection().equals(direction) && model.getStopId().equals(stopId) && (model.getServiceType() == serviceType)) {
-                            exists = true;
-                            break;
-                        }
-                    }
-                    if (!exists) {
-                        busRecyclerList.add(new RouteEtaModel(
-                                route,
-                                direction,
-                                serviceType,
-                                stopId,
-                                dest,
-                                routeEtaModel.getEta1()
-                        ));
-                        Log.d("BusListFragment", "added eta{ " +
-                                "\nroute: " + route +
-                                ";\ndirection: " + direction +
-                                ";\nserviceType: " + serviceType +
-                                ";\nstop: " + stopId +
-                                ";\ndestination: " + dest +
-                                ";\neta: " + routeEtaModel.getEta1() + "}");
+                    // Check for duplicates
+                    if (!busRecyclerList.stream().anyMatch(model ->
+                            model.getRoute().equals(route) &&
+                            model.getDirection().equals(direction) &&
+                            model.getStopId().equals(stopId) &&
+                            (model.getServiceType() == serviceType))) {
+                    busRecyclerList.add(newBusRow);
+                        Log.d("BusListFragment", "added Bus Row: " + newBusRow.toString());
                     }
                     latch.countDown();
                     // Log.d("BusListFragment", "ETA notified");

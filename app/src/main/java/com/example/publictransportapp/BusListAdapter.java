@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.publictransportapp.model.RouteEtaModel;
+import com.example.publictransportapp.model.RouteListModel;
 import com.example.publictransportapp.model.StopListModel;
 
 import java.util.ArrayList;
@@ -24,10 +25,12 @@ public class BusListAdapter extends RecyclerView.Adapter<BusListAdapter.MyViewHo
 
     private ArrayList<RouteEtaModel> busList;
     private ArrayList<StopListModel> stopList;
+    private ArrayList<RouteListModel> routeList;
 
-    public BusListAdapter(ArrayList<RouteEtaModel> busList, ArrayList<StopListModel> stopList) {
+    public BusListAdapter(ArrayList<RouteEtaModel> busList, ArrayList<StopListModel> stopList, ArrayList<RouteListModel> routeList) {
         this.busList = busList;
         this.stopList = stopList;
+        this.routeList = routeList;
     }
 
     @NonNull
@@ -40,16 +43,36 @@ public class BusListAdapter extends RecyclerView.Adapter<BusListAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(@NonNull BusListAdapter.MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        // setup bus route
         holder.route.setText(busList.get(position).getRoute());
-        String stop_name = null;
-        for (StopListModel stop : stopList) {
+
+        // setup stop name
+        StopListModel stop = null;
+        for (StopListModel stopModel : stopList) {
             if (stop.getStopId().equals(busList.get(position).getStopId())) {
-                stop_name = stop.getName_en();
+                stop = stopModel;
             }
         }
-        holder.stop.setText(stop_name);
-        holder.dest.setText(busList.get(position).getDestStopId());
+        if (stop != null) {
+            holder.stop_name.setText(stop.getName_en());
+        } else {
+            holder.stop_name.setText("Unknown Stop");
+        }
+
+        // setup bus route destination
+        String destName = "Unknown Destination";
+        for (RouteListModel routeModel : routeList) {
+            if ((routeModel.getRoute().equals(busList.get(position).getRoute())) &&
+                    (routeModel.getDirection().equals(busList.get(position).getDirection())) &&
+                    (routeModel.getServiceType() == busList.get(position).getServiceType())) {
+                destName = routeModel.getDest_en();
+                break;
+            }
+        }
+        holder.dest.setText(destName);
+        // setup ETA
         holder.eta.setText(String.valueOf(busList.get(position).getEta1()));
+        // setup button to route info
         holder.routeEtaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,7 +108,7 @@ public class BusListAdapter extends RecyclerView.Adapter<BusListAdapter.MyViewHo
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView route,
-            stop,
+            stop_name,
             dest,
             eta;
         ImageButton routeEtaButton;
@@ -93,7 +116,7 @@ public class BusListAdapter extends RecyclerView.Adapter<BusListAdapter.MyViewHo
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             this.route = itemView.findViewById(R.id.busListRow_route_id);
-            this.stop = itemView.findViewById(R.id.busListRow_stop_name);
+            this.stop_name = itemView.findViewById(R.id.busListRow_stop_name);
             this.dest = itemView.findViewById(R.id.busListRow_dest_name);
             this.eta = itemView.findViewById(R.id.busListRow_eta);
             this.routeEtaButton = itemView.findViewById(R.id.busListRow_route_eta_button);

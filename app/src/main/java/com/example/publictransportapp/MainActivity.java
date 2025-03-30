@@ -156,11 +156,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             } catch (MalformedURLException me) {
-                Log.e("MainActivity", me.toString());
+                Log.e("MainActivity", me.getMessage());
             } catch (JSONException je) {
-                Log.e("MainActivity", je.toString());
+                Log.e("MainActivity", je.getMessage());
             } catch (IOException ie) {
-                Log.e("MainActivity", ie.toString());
+                Log.e("MainActivity", ie.getMessage());
             }
         }
 
