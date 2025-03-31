@@ -233,7 +233,7 @@ public class BusListFragment extends Fragment {
             OffsetDateTime offsetDateTime = OffsetDateTime.parse(fetchedEta);
             LocalDateTime etaDateTime = offsetDateTime.atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
             int minutesUntilArrival = (int) ChronoUnit.MINUTES.between(LocalDateTime.now(), etaDateTime);
-            if (minutesUntilArrival < 0) {
+            if (minutesUntilArrival <= 0) {
                 eta = "Arriving";
             } else {
                 eta =  minutesUntilArrival + "min";

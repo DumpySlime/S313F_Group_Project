@@ -17,7 +17,7 @@
 
     <TextView
         android:id="@+id/busListRow_stop_name"
-        android:layout_width="211dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="110dp"
         android:layout_marginTop="10dp"
@@ -27,7 +27,7 @@
 
     <TextView
         android:id="@+id/busListRow_dest_name"
-        android:layout_width="206dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="115dp"
         android:layout_marginTop="40dp"
@@ -40,10 +40,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="322dp"
+        android:layout_marginStart="310dp"
         android:maxLines="1"
         android:text="@string/eta"
-        android:textSize="14pt" />
+        android:textSize="12pt" />
 
 
 </FrameLayout>
