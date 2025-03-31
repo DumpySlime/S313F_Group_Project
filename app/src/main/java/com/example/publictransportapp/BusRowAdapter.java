@@ -1,21 +1,17 @@
 package com.example.publictransportapp;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.example.publictransportapp.model.BusRowList;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class BusRowAdapter extends BaseAdapter {
 
@@ -29,7 +25,7 @@ public class BusRowAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return data.size()-2;
+        return data.size()-3;
     }
 
     @Override
@@ -49,16 +45,16 @@ public class BusRowAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.bus_list_row, parent, false);
         }
-
-        TextView routeTextView = view.findViewById(R.id.busListRow_route_id);
+        //Log.d("BusRowAdapter","getView");
+        TextView routeTextView = view.findViewById(R.id.busListRow_route);
         TextView stopTextView = view.findViewById(R.id.busListRow_stop_name);
         TextView destTextView = view.findViewById(R.id.busListRow_dest_name);
         TextView etaTextView = view.findViewById(R.id.busListRow_eta);
 
-        routeTextView.setText(BusRowList.ROUTE);
-        stopTextView.setText(BusRowList.STOP_NAME);
-        destTextView.setText(BusRowList.DEST);
-        etaTextView.setText(BusRowList.ETA);
+        routeTextView.setText(data.get(position).get("route"));
+        stopTextView.setText(data.get(position).get("stop_name"));
+        destTextView.setText(data.get(position).get("dest"));
+        etaTextView.setText(data.get(position).get("eta"));
 
         return view;
     }

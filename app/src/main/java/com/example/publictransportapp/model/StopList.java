@@ -22,6 +22,8 @@ public class StopList {
         stopData.put(NAME_SC, name_sc);
         stopData.put(LAT, lat);
         stopData.put(LONG, lon);
+
+        stopList.add(stopData);
     }
 
 }

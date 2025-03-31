@@ -3,7 +3,7 @@ package com.example.publictransportapp.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class BusETAList {
+public class RouteStopEtaList {
     public static String
             CO = "co",
             ROUTE = "route",
@@ -15,9 +15,9 @@ public class BusETAList {
             DEST_SC = "dest_sc",
             ETA_SEQ = "eta_seq";
 
-    public static ArrayList<HashMap<String, String>> etaList = new ArrayList<>();
+    public static ArrayList<HashMap<String, String>> RouteStopEtaList = new ArrayList<>();
 
-    public static void addBusETAList(String co, String route, String direction, String service_type, String seq, String dest_en, String dest_tc, String dest_sc, String eta_seq) {
+    public static void addRouteStopETAList(String co, String route, String direction, String service_type, String seq, String dest_en, String dest_tc, String dest_sc, String eta_seq) {
         HashMap<String, String> etaData = new HashMap<>();
         etaData.put(CO, co);
         etaData.put(ROUTE, route);
@@ -29,10 +29,10 @@ public class BusETAList {
         etaData.put(DEST_SC, dest_sc);
         etaData.put(ETA_SEQ, eta_seq);
 
-        etaList.add(etaData);
+        RouteStopEtaList.add(etaData);
     }
 
     public static void clearETAList() {
-        etaList.clear();
+        RouteStopEtaList.clear();
     }
 }
