@@ -2,9 +2,7 @@ package com.example.publictransportapp;
 
 import android.util.Log;
 
-import com.example.publictransportapp.model.ETAList;
 import com.example.publictransportapp.model.RouteList;
-import com.example.publictransportapp.model.RouteStopEtaList;
 import com.example.publictransportapp.model.RouteStopList;
 import com.example.publictransportapp.model.StopList;
 

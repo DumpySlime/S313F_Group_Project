@@ -33,10 +33,6 @@
             android:value="YOUR_API_KEY" />
 
         <activity
-            android:name=".MapsFragment"
-            android:exported="false"
-            android:label="@string/title_activity_maps_fragment" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

@@ -15,10 +15,13 @@ public class RouteETAList {
             DEST_SC = "dest_sc",
             ETA_SEQ = "eta_seq",
             ETA = "eta";
+    public static String
+            LAT = "lat",
+            LON = "lon";
 
     public static ArrayList<HashMap<String, String>> routeEtaList = new ArrayList<>();
 
-    public static void addETAList(String co, String route, String direction, String service_type, String seq, String dest_en, String dest_tc, String dest_sc, String eta_seq, String eta) {
+    public static void addETAList(String co, String route, String direction, String service_type, String seq, String dest_en, String dest_tc, String dest_sc, String eta_seq, String eta, String lat, String lon) {
         HashMap<String, String> etaData = new HashMap<>();
         etaData.put(CO, co);
         etaData.put(ROUTE, route);
@@ -30,6 +33,8 @@ public class RouteETAList {
         etaData.put(DEST_SC, dest_sc);
         etaData.put(ETA_SEQ, eta_seq);
         etaData.put(ETA, eta);
+        etaData.put(LAT, lat);
+        etaData.put(LON, lon);
 
         routeEtaList.add(etaData);
     }

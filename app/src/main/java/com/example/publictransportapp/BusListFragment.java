@@ -44,7 +44,7 @@ public class BusListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("BusListFragment", "Initialize onCreateView");
+        // Log.d("BusListFragment", "Initialize onCreateView");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bus_list, container, false);
 
@@ -87,12 +87,14 @@ public class BusListFragment extends Fragment {
                         // Pass route, service_type and direction as arguements
                         HashMap<String, String> busRow = BusRowList.busRowList.get(i);
                         Bundle bundle = new Bundle();
-                        bundle.putString("ROUTE", busRow.get("ROUTE"));
-                        bundle.putString("SERVICE_TYPE", busRow.get("SERVICE_TYPE"));
-                        bundle.putString("DIRECTION", busRow.get("DIRECTION"));
+                        bundle.putString("route", busRow.get("route"));
+                        bundle.putString("service_type", busRow.get("service_type"));
+                        bundle.putString("direction", busRow.get("direction"));
+                        bundle.putString("stop_id", busRow.get("stop_id"));
 
                         // Create a new instance of RouteEtaFragment
                         RouteEtaFragment routeEtaFragment = new RouteEtaFragment();
+                        routeEtaFragment.setArguments(bundle);
 
                         // Replace the current fragment with RouteEtaFragment
                         if (getActivity() != null) {
