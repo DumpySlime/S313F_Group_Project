@@ -20,7 +20,7 @@ import java.net.URL;
 
 public class RouteStopHandlerThread extends Thread {
     private static final String TAG = "RouteStopHandlerThread";
-    private String baseRouteStopUrl = "https://data.etabus.gov.hk/v1/transport/kmb/route-stop/";
+    private final String baseRouteStopUrl = "https://data.etabus.gov.hk/v1/transport/kmb/route-stop/";
 
     private static String route, direction, serviceType;
 
