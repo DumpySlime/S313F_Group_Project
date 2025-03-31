@@ -27,16 +27,16 @@ public class JsonHandlerThread extends Thread {
     public void run() {
         RouteHandlerThread routeHandlerThread = new RouteHandlerThread();
         StopHandlerThread stopHandlerThread = new StopHandlerThread();
-        RouteStopHandlerThread routeStopHandlerThread = new RouteStopHandlerThread();
+        //RouteStopHandlerThread routeStopHandlerThread = new RouteStopHandlerThread();
 
         routeHandlerThread.start();
         stopHandlerThread.start();
-        routeStopHandlerThread.start();
+        //routeStopHandlerThread.start();
 
         try {
             routeHandlerThread.join();
             stopHandlerThread.join();
-            routeStopHandlerThread.join();
+            //routeStopHandlerThread.join();
         } catch (InterruptedException e) {
             Log.e(TAG, "Thread interrupted: " + e.getMessage());
         }
@@ -164,7 +164,7 @@ public class JsonHandlerThread extends Thread {
         }
     }
 
-    static class RouteStopHandlerThread extends Thread {
+    /*static class RouteStopHandlerThread extends Thread {
         private final String TAG = "RouteStopHandlerThread";
         private String routeStopUrl = "https://data.etabus.gov.hk/v1/transport/kmb/route-stop/";
 
@@ -221,7 +221,7 @@ public class JsonHandlerThread extends Thread {
             }
             return response;
         }
-    }
+    }*/
 
     private static String inputStreamToString(InputStream is) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));

@@ -24,4 +24,8 @@ public class RouteStopList {
 
         routeStopList.add(routeStopData);
     }
+
+    public static void clearRouteStopList() {
+        routeStopList.clear();
+    }
 }

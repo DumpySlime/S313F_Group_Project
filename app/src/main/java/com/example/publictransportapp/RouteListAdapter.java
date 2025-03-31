@@ -22,7 +22,7 @@ public class RouteListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return data.size()-3;
+        return data.size()-1;
     }
 
     @Override
@@ -40,18 +40,18 @@ public class RouteListAdapter extends BaseAdapter {
         View view = convertView;
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.bus_list_row, parent, false);
+            view = inflater.inflate(R.layout.route_eta_row, parent, false);
         }
         //Log.d("BusRowAdapter","getView");
-        TextView routeTextView = view.findViewById(R.id.busListRow_route);
-        TextView stopTextView = view.findViewById(R.id.busListRow_stop_name);
-        TextView destTextView = view.findViewById(R.id.busListRow_dest_name);
-        TextView etaTextView = view.findViewById(R.id.busListRow_eta);
+        TextView stopNameTextView = view.findViewById(R.id.routeEtaRow_station_name);
+        TextView eta1TextView = view.findViewById(R.id.routeEtaRow_eta1);
+        TextView eta2TextView = view.findViewById(R.id.routeEtaRow_eta2);
+        TextView eta3TextView = view.findViewById(R.id.routeEtaRow_eta3);
 
-        routeTextView.setText(data.get(position).get("route"));
-        stopTextView.setText(data.get(position).get("stop_name"));
-        destTextView.setText(data.get(position).get("dest"));
-        etaTextView.setText(data.get(position).get("eta"));
+        stopNameTextView.setText(data.get(position).get("stop_name"));
+        eta1TextView.setText(data.get(position).get("eta1"));
+        eta2TextView.setText(data.get(position).get("eta2"));
+        eta3TextView.setText(data.get(position).get("eta3"));
 
         return view;
     }

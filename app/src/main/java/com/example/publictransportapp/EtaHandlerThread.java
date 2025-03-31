@@ -19,21 +19,21 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-public class StopEtaHandlerThread extends Thread {
+public class EtaHandlerThread extends Thread {
     private static final String TAG = "StopEtaHandlerThread";
-    private static String baseStopEtaUrl = "https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/";
+    private static String baseEtaUrl = "https://data.etabus.gov.hk/v1/transport/kmb/";
 
     private static String query;
 
-    StopEtaHandlerThread(String query) {
-        StopEtaHandlerThread.query = query;
+    EtaHandlerThread(String query) {
+        EtaHandlerThread.query = query;
     }
 
-    public static String makeStopEtaRequest() {
+    public static String makeEtaRequest() {
         String response = null;
 
         try {
-            URL url = new URL(baseStopEtaUrl + query);
+            URL url = new URL(baseEtaUrl + query);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 
@@ -74,13 +74,13 @@ public class StopEtaHandlerThread extends Thread {
     }
 
     public void run() {
-        String EtaStr = makeStopEtaRequest();
-        Log.d(TAG, "StopEta url:" + baseStopEtaUrl + query);
-        Log.d(TAG, "Response from StopEta url: " + EtaStr);
+        String etaStr = makeEtaRequest();
+        Log.d(TAG, "Eta url:" + baseEtaUrl + query);
+        Log.d(TAG, "Response from Eta url: " + etaStr);
 
-        if (EtaStr != null) {
+        if (etaStr != null) {
             try {
-                JSONObject jsonObj = new JSONObject(EtaStr);
+                JSONObject jsonObj = new JSONObject(etaStr);
 
                 // Getting JSON Array node
                 JSONArray etas = jsonObj.getJSONArray("data");

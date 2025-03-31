@@ -152,11 +152,12 @@ public class BusListFragment extends Fragment {
                     String stopName = StopList.stopList.get(i).get("name_en");
                     //Log.d(TAG, "Stop Name: " + stopName);
 
-                    StopEtaHandlerThread stopEtaHandlerThread = new StopEtaHandlerThread(stopId);
-                    stopEtaHandlerThread.start();
+                    // get from stop-eta
+                    EtaHandlerThread etaHandlerThread = new EtaHandlerThread("stop-eta/" + stopId);
+                    etaHandlerThread.start();
 
                     try {
-                        stopEtaHandlerThread.join();
+                        etaHandlerThread.join();
                     } catch (InterruptedException e) {
                         Log.e(TAG, e.getMessage());
                     }
