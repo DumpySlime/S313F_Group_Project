@@ -3,7 +3,6 @@ package com.example.publictransportapp;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -11,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.publictransportapp.model.ETAList;
@@ -40,7 +38,7 @@ public class RouteEtaFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_route_eta, container, false);
 
-        routeListView = (ListView) view.findViewById(R.id.route_eta_list_view);
+        routeListView = view.findViewById(R.id.route_eta_list_view);
 
         route = null;
         serviceType = null;
@@ -140,7 +138,6 @@ public class RouteEtaFragment extends Fragment {
                     String stopid = RouteStopList.routeStopList.get(rsCounter).get("stopId");
                     tempRouteRow.get(curSeq).put("stop_id", stopid);
                     // find corresponding stop name
-                    String stopName = null;
                     for (int j = 0; j < StopList.stopList.size(); j++) {
                         if (stopid != null) {
                             if (stopid.equals(StopList.stopList.get(j).get("stopId"))) {
@@ -181,7 +178,7 @@ public class RouteEtaFragment extends Fragment {
             if (minutesUntilArrival < 0) {
                 eta = "Arriving";
             } else {
-                eta =  String.valueOf(minutesUntilArrival) + "min";
+                eta =  minutesUntilArrival + "min";
             }
         }
         return eta;

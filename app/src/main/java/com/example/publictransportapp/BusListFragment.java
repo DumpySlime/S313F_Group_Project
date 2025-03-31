@@ -50,7 +50,7 @@ public class BusListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_bus_list, container, false);
 
-        busListView = (ListView) view.findViewById(R.id.bus_list_view);
+        busListView = view.findViewById(R.id.bus_list_view);
 
         return view;
     }
@@ -83,29 +83,26 @@ public class BusListFragment extends Fragment {
         busListView.setAdapter(busRowAdapter);
 
         busListView.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        // Pass route, service_type and direction as arguements
-                        HashMap<String, String> busRow = BusRowList.busRowList.get(i);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("route", busRow.get("route"));
-                        bundle.putString("service_type", busRow.get("service_type"));
-                        bundle.putString("direction", busRow.get("direction"));
+                (adapterView, view1, i, l) -> {
+                    // Pass route, service_type and direction as arguements
+                    HashMap<String, String> busRow = BusRowList.busRowList.get(i);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("route", busRow.get("route"));
+                    bundle.putString("service_type", busRow.get("service_type"));
+                    bundle.putString("direction", busRow.get("direction"));
 
-                        // Create a new instance of RouteEtaFragment
-                        RouteEtaFragment routeEtaFragment = new RouteEtaFragment();
-                        routeEtaFragment.setArguments(bundle);
+                    // Create a new instance of RouteEtaFragment
+                    RouteEtaFragment routeEtaFragment = new RouteEtaFragment();
+                    routeEtaFragment.setArguments(bundle);
 
-                        // Replace the current fragment with RouteEtaFragment
-                        if (getActivity() != null) {
-                            FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                            fragmentTransaction.replace(R.id.fragment_container, routeEtaFragment)
-                                    .addToBackStack(null)
-                                    .commit();
-                        }
-
+                    // Replace the current fragment with RouteEtaFragment
+                    if (getActivity() != null) {
+                        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.fragment_container, routeEtaFragment)
+                                .addToBackStack(null)
+                                .commit();
                     }
+
                 }
         );
 
@@ -239,7 +236,7 @@ public class BusListFragment extends Fragment {
             if (minutesUntilArrival < 0) {
                 eta = "Arriving";
             } else {
-                eta =  String.valueOf(minutesUntilArrival) + "min";
+                eta =  minutesUntilArrival + "min";
             }
         }
         return eta;
@@ -263,12 +260,7 @@ public class BusListFragment extends Fragment {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         // Calculate the distance in kilometers
-        double distanceInKm = R * c;
         // Log.d(TAG, "Distance: " + distanceInKm);
-        return distanceInKm;
-    }
-
-    double haversine(double val) {
-        return Math.pow(Math.sin(val / 2), 2);
+        return R * c;
     }
 }
