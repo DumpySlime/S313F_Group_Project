@@ -43,15 +43,15 @@ public class RouteListAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.bus_list_row, parent, false);
         }
         //Log.d("BusRowAdapter","getView");
-        TextView routeTextView = view.findViewById(R.id.busListRow_route);
-        TextView stopTextView = view.findViewById(R.id.busListRow_stop_name);
-        TextView destTextView = view.findViewById(R.id.busListRow_dest_name);
-        TextView etaTextView = view.findViewById(R.id.busListRow_eta);
+        TextView stationTextView = view.findViewById(R.id.routeEtaRow_station_name);
+        TextView eta1TextView = view.findViewById(R.id.routeEtaRow_eta1);
+        TextView eta2TextView = view.findViewById(R.id.routeEtaRow_eta2);
+        TextView eta3TextView = view.findViewById(R.id.routeEtaRow_eta3);
 
-        routeTextView.setText(data.get(position).get("route"));
-        stopTextView.setText(data.get(position).get("stop_name"));
-        destTextView.setText(data.get(position).get("dest"));
-        etaTextView.setText(data.get(position).get("eta"));
+        stationTextView.setText(data.get(position).get("route"));
+        eta1TextView.setText(data.get(position).get("stop_name"));
+        eta2TextView.setText(data.get(position).get("dest"));
+        eta3TextView.setText(data.get(position).get("eta"));
 
         return view;
     }
