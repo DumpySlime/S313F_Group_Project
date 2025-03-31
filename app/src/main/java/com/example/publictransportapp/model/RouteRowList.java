@@ -8,7 +8,8 @@ public class RouteRowList {
             STOP_NAME = "stop_name",
             ETA1 = "eta1",
             ETA2 = "eta2",
-            ETA3 = "eta3",
+            ETA3 = "eta3";
+    public static String
             STOP_ID = "stop_id";
 
     public static ArrayList<HashMap<String, String>> routeRowList = new ArrayList<>();
