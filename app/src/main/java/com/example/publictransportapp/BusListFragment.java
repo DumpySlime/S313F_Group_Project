@@ -19,6 +19,8 @@ import android.widget.ListView;
 
 import com.example.publictransportapp.model.BusRowList;
 import com.example.publictransportapp.model.ETAList;
+import com.example.publictransportapp.model.RouteRowList;
+import com.example.publictransportapp.model.RouteStopList;
 import com.example.publictransportapp.model.StopList;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
@@ -90,7 +92,6 @@ public class BusListFragment extends Fragment {
                         bundle.putString("route", busRow.get("route"));
                         bundle.putString("service_type", busRow.get("service_type"));
                         bundle.putString("direction", busRow.get("direction"));
-                        bundle.putString("stop_id", busRow.get("stop_id"));
 
                         // Create a new instance of RouteEtaFragment
                         RouteEtaFragment routeEtaFragment = new RouteEtaFragment();
@@ -136,6 +137,8 @@ public class BusListFragment extends Fragment {
 
 
     private void fetchBusData() {
+        RouteRowList.clearRouteRowList();
+        RouteStopList.clearRouteStopList();
         ETAList.clearETAList();
         BusRowList.clearBusList();
         // search for bus id that is <0.5km
@@ -232,7 +235,12 @@ public class BusListFragment extends Fragment {
         if ((fetchedEta != null) && ((!fetchedEta.equals("null")))) {
             OffsetDateTime offsetDateTime = OffsetDateTime.parse(fetchedEta);
             LocalDateTime etaDateTime = offsetDateTime.atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
-            eta =  String.valueOf((int) ChronoUnit.MINUTES.between(LocalDateTime.now(), etaDateTime));
+            int minutesUntilArrival = (int) ChronoUnit.MINUTES.between(LocalDateTime.now(), etaDateTime);
+            if (minutesUntilArrival < 0) {
+                eta = "Arriving";
+            } else {
+                eta =  String.valueOf(minutesUntilArrival) + "min";
+            }
         }
         return eta;
     }

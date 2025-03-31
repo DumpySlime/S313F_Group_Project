@@ -3,6 +3,7 @@ package com.example.publictransportapp;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -18,8 +19,10 @@ import com.example.publictransportapp.model.RouteRowList;
 import com.example.publictransportapp.model.RouteStopList;
 import com.example.publictransportapp.model.StopList;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 
 public class RouteEtaFragment extends Fragment {
@@ -27,7 +30,7 @@ public class RouteEtaFragment extends Fragment {
     private final String TAG = "RouteEtaFragment";
     private ListView routeListView;
     private RouteListAdapter routeListAdapter;
-    private String route, serviceType, direction, stopId;
+    private String route, serviceType, direction;
     private Handler handler;
     private Runnable etaRunnable;
 
@@ -42,7 +45,6 @@ public class RouteEtaFragment extends Fragment {
         route = null;
         serviceType = null;
         direction = null;
-        stopId = null;
 
         return view;
     }
@@ -53,9 +55,8 @@ public class RouteEtaFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             route = args.getString("route");
-            serviceType = args.getString("serviceType");
+            serviceType = args.getString("service_type");
             direction = args.getString("direction");
-            stopId = args.getString("stop_id");
         }
 
         // Populate routeEtaList
@@ -68,24 +69,14 @@ public class RouteEtaFragment extends Fragment {
             }
         };
 
-        Log.d(TAG, "RouteEtaList: " + ETAList.etaList.toString());
+        Log.d(TAG, "RouteRowList: " + RouteRowList.routeRowList.toString());
 
         // Create Adapter for RouteEtaList
         routeListAdapter = new RouteListAdapter(
                 this.getContext(),
-                ETAList.etaList
+                RouteRowList.routeRowList
         );
         routeListView.setAdapter(routeListAdapter);
-
-        routeListView.setOnItemClickListener(
-                new AdapterView.OnItemClickListener() {
-
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                    }
-                }
-        );
     }
 
     // start data refresh
@@ -139,7 +130,7 @@ public class RouteEtaFragment extends Fragment {
             String curSeq = ETAList.etaList.get(i).get("seq");
             if (dir.equals(direction)) {
                 String etaSeq = ETAList.etaList.get(i).get("eta_seq");
-                String eta = ETAList.etaList.get(i).get("eta");
+                String fetchedEta = ETAList.etaList.get(i).get("eta");
                 // stay in the same HashMap until sequence number updated
                 if (!tempRouteRow.containsKey(curSeq)) {
                     tempRouteRow.put(curSeq, new HashMap<>());
@@ -153,16 +144,15 @@ public class RouteEtaFragment extends Fragment {
                     for (int j = 0; j < StopList.stopList.size(); j++) {
                         if (stopid != null) {
                             if (stopid.equals(StopList.stopList.get(j).get("stopId"))) {
-                                stopName = StopList.stopList.get(j).get("name_en");
+                                tempRouteRow.get(curSeq).put("stop_name", StopList.stopList.get(j).get("name_en"));
                                 break;
                             }
                         } else {
                             Log.e(TAG, "Null Stop Id");
                         }
                     }
-                    tempRouteRow.get(curSeq).put("stop_name", stopName);
                 }
-                tempRouteRow.get(curSeq).put(etaSeq, eta);
+                tempRouteRow.get(curSeq).put(etaSeq, calculateEta(fetchedEta));
                 rsCounter++;
             }
         }
@@ -170,14 +160,31 @@ public class RouteEtaFragment extends Fragment {
         // add restructured data to RouteRowList
         for (String seq : tempRouteRow.keySet()) {
             HashMap<String, String> etas = tempRouteRow.get(seq);
-            String stopName = etas.get("stop_name");
-            String stopId = etas.get("stop_id");
-            String eta1 = etas.get("1") != null ? etas.get("1") : ""; // keep it empty if nothing is fetched
-            String eta2 = etas.get("1") != null ? etas.get("1") : ""; // keep it empty if nothing is fetched
-            String eta3 = etas.get("1") != null ? etas.get("1") : ""; // keep it empty if nothing is fetched
-
-            RouteRowList.addRouteRowList(stopName, eta1, eta2,eta3, stopId);
+            Log.d(TAG, "tempRouteRow: " + etas.toString());
+            RouteRowList.addRouteRowList(
+                    etas.get("stop_name"),
+                    etas.get("1") != null ? etas.get("1") : "", // remain empty if = null
+                    etas.get("2") != null ? etas.get("2") : "",
+                    etas.get("3") != null ? etas.get("3") : "",
+                    etas.get("stop_id")
+            );
         }
+        routeListAdapter.notifyDataSetChanged();
+    }
+
+    private String calculateEta(String fetchedEta) {
+        String eta = "NA";
+        if ((fetchedEta != null) && ((!fetchedEta.equals("null")))) {
+            OffsetDateTime offsetDateTime = OffsetDateTime.parse(fetchedEta);
+            LocalDateTime etaDateTime = offsetDateTime.atZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+            int minutesUntilArrival = (int) ChronoUnit.MINUTES.between(LocalDateTime.now(), etaDateTime);
+            if (minutesUntilArrival < 0) {
+                eta = "Arriving";
+            } else {
+                eta =  String.valueOf(minutesUntilArrival) + "min";
+            }
+        }
+        return eta;
     }
 
 }

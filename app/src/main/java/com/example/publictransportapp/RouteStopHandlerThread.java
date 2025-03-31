@@ -26,7 +26,11 @@ public class RouteStopHandlerThread extends Thread {
 
     public RouteStopHandlerThread (String route, String direction, String serviceType) {
         RouteStopHandlerThread.route = route;
-        RouteStopHandlerThread.direction = direction;
+        if (direction.equals("O")) {    // change arguements to match query
+            RouteStopHandlerThread.direction = "outbound";
+        } else {
+            RouteStopHandlerThread.direction = "inbound";
+        }
         RouteStopHandlerThread.serviceType = serviceType;
     }
 
@@ -34,7 +38,8 @@ public class RouteStopHandlerThread extends Thread {
     public void run() {
 
         String routeStopStr = makeRouteStopRequest();
-        Log.d(TAG, "Response from route-stop url: " + routeStopStr + route + "/" + direction + "/" + serviceType);
+        Log.d(TAG, "route-stop url: " + baseRouteStopUrl + route + "/" + direction + "/" + serviceType);
+        Log.d(TAG, "Response from route-stop url: " + routeStopStr);
 
         if (routeStopStr != null) {
             try {
