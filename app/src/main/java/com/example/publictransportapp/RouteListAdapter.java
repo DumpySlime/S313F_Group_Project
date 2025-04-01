@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -43,16 +45,24 @@ public class RouteListAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.route_eta_row, parent, false);
         }
         //Log.d("BusRowAdapter","getView");
+        TextView stopNoTextView = view.findViewById(R.id.routeEtaRow_stop_no);
         TextView stopNameTextView = view.findViewById(R.id.routeEtaRow_station_name);
         TextView eta1TextView = view.findViewById(R.id.routeEtaRow_eta1);
         TextView eta2TextView = view.findViewById(R.id.routeEtaRow_eta2);
         TextView eta3TextView = view.findViewById(R.id.routeEtaRow_eta3);
+        ConstraintLayout routeEtaRowLayout = view.findViewById(R.id.routeEtaRow);
 
+        stopNoTextView.setText(Integer.toString(position + 1));
         stopNameTextView.setText(data.get(position).get("stop_name"));
         eta1TextView.setText(data.get(position).get("eta1"));
         eta2TextView.setText(data.get(position).get("eta2"));
         eta3TextView.setText(data.get(position).get("eta3"));
 
+        if (position % 2 == 0) {
+            routeEtaRowLayout.setBackgroundColor(0xD4D4D4D4);
+        } else {
+            routeEtaRowLayout.setBackgroundColor(0xFFFFFFFF);
+        }
         return view;
     }
 }

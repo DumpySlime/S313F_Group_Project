@@ -1,6 +1,5 @@
 package com.example.publictransportapp;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -12,6 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.publictransportapp.fragment.BookmarkFragment;
+import com.example.publictransportapp.fragment.BusListFragment;
+import com.example.publictransportapp.fragment.SearchFragment;
+import com.example.publictransportapp.fragment.ShortestPathFragment;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -65,9 +68,14 @@ public class MainActivity extends AppCompatActivity {
                     case 2:
                         titleBar.setText(R.string.searchRoute_button);
                         fragment = new SearchFragment();
+                        break;
+                    case 3:
+                        titleBar.setText(R.string.shortestPath_button);
+                        fragment = new ShortestPathFragment();
                 }
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment)
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit();
             }

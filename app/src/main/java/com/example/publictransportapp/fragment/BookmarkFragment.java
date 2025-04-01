@@ -1,4 +1,4 @@
-package com.example.publictransportapp;
+package com.example.publictransportapp.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,8 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.publictransportapp.R;
 import com.example.publictransportapp.model.Place;
-import com.example.publictransportapp.model.Stop;
+import com.example.publictransportapp.model.StopObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -64,9 +65,9 @@ public class BookmarkFragment extends Fragment {
             String routeNumber = routeNumberInput.getText().toString();
             String distinction = distinctionInput.getText().toString();
             String stopCategory = stopCategoryInput.getText().toString();
-            Stop stop = new Stop(routeNumber, distinction, stopCategory);
+            StopObject stopObject = new StopObject(routeNumber, distinction, stopCategory);
             addStopToList(routeNumber, distinction, stopCategory);
-            saveStopToPreferences(stop); // Save to SharedPreferences
+            saveStopToPreferences(stopObject); // Save to SharedPreferences
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
@@ -124,10 +125,10 @@ public class BookmarkFragment extends Fragment {
     private void loadStopsFromPreferences() {
         SharedPreferences prefs = requireContext().getSharedPreferences("bookmarks", Context.MODE_PRIVATE);
         String stopsJson = prefs.getString("stops", "[]");
-        List<Stop> stops = new Gson().fromJson(stopsJson, new TypeToken<List<Stop>>(){}.getType());
+        List<StopObject> stopObjects = new Gson().fromJson(stopsJson, new TypeToken<List<StopObject>>(){}.getType());
 
-        for (Stop stop : stops) {
-            addStopToList(stop.getRouteNumber(), stop.getDistinction(), stop.getStopCategory());
+        for (StopObject stopObject : stopObjects) {
+            addStopToList(stopObject.getRouteNumber(), stopObject.getDistinction(), stopObject.getStopCategory());
         }
     }
 
@@ -140,15 +141,15 @@ public class BookmarkFragment extends Fragment {
             addPlaceToList(place.getLocation(), place.getCategory());
         }
     }
-    private void saveStopToPreferences(Stop stop) {
+    private void saveStopToPreferences(StopObject stopObject) {
         SharedPreferences prefs = requireContext().getSharedPreferences("bookmarks", Context.MODE_PRIVATE);
         String stopsJson = prefs.getString("stops", "[]");
 
         // Convert JSON to a List, add new stop, and save it back
-        List<Stop> stops = new Gson().fromJson(stopsJson, new TypeToken<List<Stop>>(){}.getType());
-        stops.add(stop);
+        List<StopObject> stopObjects = new Gson().fromJson(stopsJson, new TypeToken<List<StopObject>>(){}.getType());
+        stopObjects.add(stopObject);
 
-        String newStopsJson = new Gson().toJson(stops);
+        String newStopsJson = new Gson().toJson(stopObjects);
         prefs.edit().putString("stops", newStopsJson).apply();
     }
 

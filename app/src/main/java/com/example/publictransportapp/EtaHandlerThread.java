@@ -25,7 +25,7 @@ public class EtaHandlerThread extends Thread {
 
     private static String query;
 
-    EtaHandlerThread(String query) {
+    public EtaHandlerThread(String query) {
         EtaHandlerThread.query = query;
     }
 

@@ -1,4 +1,4 @@
-package com.example.publictransportapp;
+package com.example.publictransportapp.fragment;
 
 import android.os.Bundle;
 
@@ -12,6 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.example.publictransportapp.EtaHandlerThread;
+import com.example.publictransportapp.R;
+import com.example.publictransportapp.RouteListAdapter;
+import com.example.publictransportapp.RouteStopHandlerThread;
 import com.example.publictransportapp.model.ETAList;
 import com.example.publictransportapp.model.RouteRowList;
 import com.example.publictransportapp.model.RouteStopList;

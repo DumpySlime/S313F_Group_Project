@@ -1,38 +1,41 @@
 package com.example.publictransportapp.model;
 
+
+import com.google.gson.annotations.SerializedName;
+
 public class Stop {
-    private String routeNumber;
-    private String distinction;
-    private String stopCategory;
+    @SerializedName("stop")
+    private String stop;
+    @SerializedName("name_en")
+    private String nameEn;
+    private double lat;
+    @SerializedName("long")
+    private double lon;
 
-    public Stop(String routeNumber, String distinction, String stopCategory) {
-        this.routeNumber = routeNumber;
-        this.distinction = distinction;
-        this.stopCategory = stopCategory;
+    public Stop(String stop, String nameEn, double lat, double lon) {
+        this.stop = stop;
+        this.nameEn = nameEn;
+        this.lat = lat;
+        this.lon = lon;
     }
 
-    // Getters and Setters
-    public String getRouteNumber() {
-        return routeNumber;
+    public double distanceTo(double otherLat, double otherLon) {
+        final double R = 6371e3; // meters
+        double φ1 = Math.toRadians(lat);
+        double φ2 = Math.toRadians(otherLat);
+        double Δφ = Math.toRadians(otherLat - lat);
+        double Δλ = Math.toRadians(otherLon - lon);
+
+        double a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                Math.cos(φ1) * Math.cos(φ2) *
+                        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
     }
 
-    public void setRouteNumber(String routeNumber) {
-        this.routeNumber = routeNumber;
-    }
-
-    public String getDistinction() {
-        return distinction;
-    }
-
-    public void setDistinction(String distinction) {
-        this.distinction = distinction;
-    }
-
-    public String getStopCategory() {
-        return stopCategory;
-    }
-
-    public void setStopCategory(String stopCategory) {
-        this.stopCategory = stopCategory;
-    }
+    // Getters
+    public String getStop() { return stop; }
+    public String getNameEn() { return nameEn; }
+    public double getLat() { return lat; }
+    public double getLon() { return lon; }
 }

@@ -1,4 +1,4 @@
-package com.example.publictransportapp;
+package com.example.publictransportapp.fragment;
 
 
 import android.os.Bundle;
@@ -15,6 +15,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.publictransportapp.ApiClient;
+import com.example.publictransportapp.BusRouteAdapter;
+import com.example.publictransportapp.JsonParser;
+import com.example.publictransportapp.R;
 import com.example.publictransportapp.model.BusRoute;
 
 import java.util.ArrayList;

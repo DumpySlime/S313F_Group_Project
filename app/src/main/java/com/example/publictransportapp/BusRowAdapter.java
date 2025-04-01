@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.publictransportapp.model.BusRowList;
@@ -50,11 +51,18 @@ public class BusRowAdapter extends BaseAdapter {
         TextView stopTextView = view.findViewById(R.id.busListRow_stop_name);
         TextView destTextView = view.findViewById(R.id.busListRow_dest_name);
         TextView etaTextView = view.findViewById(R.id.busListRow_eta);
+        FrameLayout busListRowLayout = view.findViewById(R.id.busListRow_Layout);
 
         routeTextView.setText(data.get(position).get("route"));
         stopTextView.setText(data.get(position).get("stop_name"));
         destTextView.setText(data.get(position).get("dest"));
         etaTextView.setText(data.get(position).get("eta"));
+
+        if (position % 2 == 0) {
+            busListRowLayout.setBackgroundColor(0xD4D4D4D4);
+        } else {
+            busListRowLayout.setBackgroundColor(0xFFFFFFFF);
+        }
 
         return view;
     }

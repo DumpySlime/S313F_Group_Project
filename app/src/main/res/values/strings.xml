@@ -3,10 +3,51 @@
     <string name="bookmark_button">Bookmark</string>
     <string name="busList_button">Bus List</string>
     <string name="searchRoute_button">Search Route</string>
+    <string name="shortestPath_button">Shortest Path</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="route_id">Route</string>
     <string name="stop_name">Stop</string>
     <string name="dest_name">Dest</string>
     <string name="eta">eta</string>
     <string name="title_activity_maps_fragment">MapsFragment</string>
+
+    <!-- Main UI Strings -->
+    <string name="input_start">Enter start point</string>
+    <string name="input_end">Enter end point</string>
+    <string name="find_route">Find Route</string>
+    <string name="back_to_search">Back to Search</string>
+
+    <!-- Loading and Status Messages -->
+    <string name="loading">Loading...</string>
+    <string name="data_loading">Loading data...</string>
+    <string name="system_ready">System ready, please select stations</string>
+    <string name="calculating_route">Calculating the best route...</string>
+
+    <!-- Error Messages -->
+    <string name="invalid_station">Invalid station selection</string>
+    <string name="no_route_found">No viable route found</string>
+    <string name="cannot_determine_route">Unable to determine bus routes</string>
+    <string name="select_start_end">Please select start and end points</string>
+    <string name="same_start_end">Start and end points cannot be the same</string>
+    <string name="server_error">Server response error</string>
+    <string name="route_calculation_error">Route calculation error: %1$s</string>
+    <string name="loading_error">Error: %1$s</string>
+    <string name="stations_loading_failed">Station loading failed: %1$s</string>
+    <string name="routes_loading_failed">Route data loading failed: %1$s</string>
+    <string name="local_data_loading_failed">Local data loading failed: %1$s</string>
+    <string name="api_rejected">API access denied. Please contact developer for authorization code, or use mock data.</string>
+    <string name="no_local_data">Unable to load local data, please check network connection and try again.</string>
+    <string name="read_local_file_failed">Failed to read local data file: %1$s</string>
+
+    <!-- Route Result Strings -->
+    <string name="route_from_to">From %1$s to %2$s</string>
+    <string name="routes_needed">Need to take %1$d routes:</string>
+    <string name="route_number">%1$d. Take Bus Line %2$s</string>
+    <string name="board_at">▸ Board at: %1$s</string>
+    <string name="alight_at">▸ Alight at: %1$s</string>
+    <string name="stops_count">(Passing through %1$d stops)</string>
+
+    <!-- API Error Messages -->
+    <string name="api_denied_message">API access denied, possible reasons:\n1. Server has restricted mobile app access\n2. API key needed for authorization\n3. Service has changed or is no longer available</string>
+    <string name="error_details_failed">Failed to read error details: %1$s</string>
 </resources>
