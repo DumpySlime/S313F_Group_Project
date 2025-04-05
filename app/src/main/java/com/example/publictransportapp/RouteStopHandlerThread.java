@@ -43,7 +43,7 @@ public class RouteStopHandlerThread extends Thread {
 
         if (routeStopStr != null) {
             try {
-                JSONObject jsonObj = new JSONObject(routeStopStr + route + "/" + direction + "/" + serviceType);
+                JSONObject jsonObj = new JSONObject(routeStopStr);
 
                 // Getting JSON Array node
                 JSONArray routeStops = jsonObj.getJSONArray("data");
@@ -70,7 +70,7 @@ public class RouteStopHandlerThread extends Thread {
         String response = null;
 
         try {
-            URL url = new URL(baseRouteStopUrl);
+            URL url = new URL(baseRouteStopUrl + route + "/" + direction + "/" + serviceType);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
 

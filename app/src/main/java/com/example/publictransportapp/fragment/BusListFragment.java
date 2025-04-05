@@ -33,7 +33,10 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 
 public class BusListFragment extends Fragment {
 
@@ -179,7 +182,7 @@ public class BusListFragment extends Fragment {
                             // calculate Eta
                             String fetchedEta = ETAList.etaList.get(j).get("eta");
                             String eta = calculateEta(fetchedEta);
-                            //Log.d(TAG, "Eta: " + eta);
+                            //Log.d(TAG, "Eta_seq: " + ETAList.etaList.get(j).get("eta_seq"));
 
 
                             // save data to BusRowList
@@ -190,7 +193,9 @@ public class BusListFragment extends Fragment {
                                     eta,
                                     serviceType,
                                     direction,
-                                    stopId
+                                    stopId,
+                                    Double.toString(stopLat),
+                                    Double.toString(stopLong)
                             );
                         }
                     }
@@ -198,6 +203,20 @@ public class BusListFragment extends Fragment {
             }
         }
         //Log.d(TAG, "busrowList in fetchBusData: " + BusRowList.busRowList.toString());
+        Comparator com = new Comparator<HashMap<String, String>>() {
+            @Override
+            public int compare(HashMap<String, String> o, HashMap<String, String> t1) {
+                if ((o.get("lat") != null) && (o.get("lon") != null) && (t1.get("lat") != null) && (t1.get("lon") != null)) {
+                    if (calculateDistance(Double.parseDouble(o.get("lat")),Double.parseDouble(o.get("lon"))) > calculateDistance(Double.parseDouble(t1.get("lat")),Double.parseDouble(t1.get("lon")))){
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+                return 0;
+            }
+        };
+        Collections.sort(BusRowList.busRowList, com);
         busRowAdapter.notifyDataSetChanged();
     }
 

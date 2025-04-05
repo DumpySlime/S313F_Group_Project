@@ -25,7 +25,9 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class RouteEtaFragment extends Fragment {
 
@@ -97,9 +99,7 @@ public class RouteEtaFragment extends Fragment {
 
     private void fetchRouteData() {
         // clear previous data
-        RouteRowList.clearRouteRowList();
         ETAList.clearETAList();
-        RouteStopList.clearRouteStopList();
         // get from route-eta
         EtaHandlerThread etaHandlerThread = new EtaHandlerThread("route-eta/" + route + "/" + serviceType);
         etaHandlerThread.start();
@@ -110,6 +110,7 @@ public class RouteEtaFragment extends Fragment {
             Log.e(TAG, e.getMessage());
         }
 
+        RouteStopList.clearRouteStopList();
         // fetch relevant stop name
         // fetch stop id of that route, direction, service type
         RouteStopHandlerThread routeStopHandlerThread = new RouteStopHandlerThread(route, direction, serviceType);
@@ -124,7 +125,8 @@ public class RouteEtaFragment extends Fragment {
         int rsCounter = 0;
         // temp map for routerow
         HashMap<String, HashMap<String, String>> tempRouteRow = new HashMap<>();
-
+        Log.d(TAG, "RouteStopList: "+RouteStopList.routeStopList.toString());
+        Log.d(TAG, "ETAList: "+ETAList.etaList.toString());
         for (int i = 0; i < ETAList.etaList.size(); i++) {
             // get direction
             String dir = ETAList.etaList.get(i).get("direction");
@@ -136,32 +138,35 @@ public class RouteEtaFragment extends Fragment {
                 // stay in the same HashMap until sequence number updated
                 if (!tempRouteRow.containsKey(curSeq)) {
                     tempRouteRow.put(curSeq, new HashMap<>());
-                }
-                if (!tempRouteRow.get(curSeq).containsKey("stop_id")) {
                     // fetch stop name using stop id
+                    //Log.d(TAG, "RouteStopList stopId: "+RouteStopList.routeStopList.get(rsCounter).get("stopId"));
                     String stopid = RouteStopList.routeStopList.get(rsCounter).get("stopId");
+                    Log.d(TAG, "tempRouteRow stopid: " + stopid);
                     tempRouteRow.get(curSeq).put("stop_id", stopid);
                     // find corresponding stop name
                     for (int j = 0; j < StopList.stopList.size(); j++) {
                         if (stopid != null) {
                             if (stopid.equals(StopList.stopList.get(j).get("stopId"))) {
                                 tempRouteRow.get(curSeq).put("stop_name", StopList.stopList.get(j).get("name_en"));
+                                //Log.d(TAG, "StopList stopId: "+StopList.stopList.get(j).get("stopId") + "StopList stopName: " + StopList.stopList.get(j).get("name_en"));
                                 break;
                             }
                         } else {
                             Log.e(TAG, "Null Stop Id");
                         }
                     }
+                    rsCounter++;
                 }
                 tempRouteRow.get(curSeq).put(etaSeq, calculateEta(fetchedEta));
-                rsCounter++;
             }
         }
 
+        RouteRowList.clearRouteRowList();
         // add restructured data to RouteRowList
-        for (String seq : tempRouteRow.keySet()) {
-            HashMap<String, String> etas = tempRouteRow.get(seq);
-            Log.d(TAG, "tempRouteRow: " + etas.toString());
+        Log.d(TAG, "tempRouteRow:"+ tempRouteRow.toString());
+        Log.d(TAG, "Current Route: " + route);
+        for (int k = 1; k <= tempRouteRow.size(); k++) {
+            HashMap<String, String> etas = tempRouteRow.get(Integer.toString(k));
             RouteRowList.addRouteRowList(
                     etas.get("stop_name"),
                     etas.get("1") != null ? etas.get("1") : "", // remain empty if = null

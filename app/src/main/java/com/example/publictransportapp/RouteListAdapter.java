@@ -24,7 +24,7 @@ public class RouteListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return data.size()-3;
+        return data.size();
     }
 
     @Override

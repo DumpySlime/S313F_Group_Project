@@ -13,20 +13,21 @@ import com.example.publictransportapp.model.BusRowList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class BusRowAdapter extends BaseAdapter {
 
     private final Context context;
-    private final ArrayList<HashMap<String, String>> data;
+    private final List<HashMap<String, String>> data;
 
-    public BusRowAdapter(Context context, ArrayList<HashMap<String, String>> data) {
+    public BusRowAdapter(Context context, List<HashMap<String, String>> data) {
         this.context = context;
         this.data = data;
     }
 
     @Override
     public int getCount() {
-        return data.size()-3;
+        return data.size()-5;
     }
 
     @Override

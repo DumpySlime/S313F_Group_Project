@@ -84,7 +84,31 @@ public class MainActivity extends AppCompatActivity {
             public void onTabUnselected(TabLayout.Tab tab){}
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab){}
+            public void onTabReselected(TabLayout.Tab tab){
+                Fragment fragment = null;
+                switch (tab.getPosition()) {
+                    case 0:
+                        titleBar.setText(R.string.busList_button);
+                        fragment = new BusListFragment();
+                        break;
+                    case 1:
+                        titleBar.setText(R.string.bookmark_button);
+                        fragment = new BookmarkFragment();
+                        break;
+                    case 2:
+                        titleBar.setText(R.string.searchRoute_button);
+                        fragment = new SearchFragment();
+                        break;
+                    case 3:
+                        titleBar.setText(R.string.shortestPath_button);
+                        fragment = new ShortestPathFragment();
+                }
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .commit();
+            }
         });
 
 
