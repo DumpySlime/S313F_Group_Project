@@ -50,4 +50,5 @@
     <!-- API Error Messages -->
     <string name="api_denied_message">API access denied, possible reasons:\n1. Server has restricted mobile app access\n2. API key needed for authorization\n3. Service has changed or is no longer available</string>
     <string name="error_details_failed">Failed to read error details: %1$s</string>
+    <string name="apply">Apply</string>
 </resources>

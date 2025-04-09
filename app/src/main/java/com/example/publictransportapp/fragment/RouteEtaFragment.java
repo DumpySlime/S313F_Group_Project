@@ -10,7 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.publictransportapp.EtaHandlerThread;
 import com.example.publictransportapp.R;
@@ -25,9 +27,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.TreeMap;
 
 public class RouteEtaFragment extends Fragment {
 
@@ -55,12 +55,17 @@ public class RouteEtaFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+
+        TextView titleBar = getActivity().findViewById(R.id.title_bar);
+        ImageButton filterButton = getActivity().findViewById(R.id.filter_button);
         // get relevant data from pressing
         Bundle args = getArguments();
         if (args != null) {
             route = args.getString("route");
             serviceType = args.getString("service_type");
             direction = args.getString("direction");
+            titleBar.setText("Route " + route);
+            filterButton.setVisibility(View.INVISIBLE);
         }
 
         // Populate routeEtaList
@@ -73,7 +78,7 @@ public class RouteEtaFragment extends Fragment {
             }
         };
 
-        Log.d(TAG, "RouteRowList: " + RouteRowList.routeRowList.toString());
+        // Log.d(TAG, "RouteRowList: " + RouteRowList.routeRowList.toString());
 
         // Create Adapter for RouteEtaList
         routeListAdapter = new RouteListAdapter(
@@ -163,7 +168,7 @@ public class RouteEtaFragment extends Fragment {
 
         RouteRowList.clearRouteRowList();
         // add restructured data to RouteRowList
-        Log.d(TAG, "tempRouteRow:"+ tempRouteRow.toString());
+        Log.d(TAG, "tempRouteRow:"+ tempRouteRow);
         Log.d(TAG, "Current Route: " + route);
         for (int k = 1; k <= tempRouteRow.size(); k++) {
             HashMap<String, String> etas = tempRouteRow.get(Integer.toString(k));

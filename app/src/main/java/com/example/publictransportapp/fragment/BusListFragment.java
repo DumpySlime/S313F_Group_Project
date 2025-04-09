@@ -14,7 +14,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.publictransportapp.BusRowAdapter;
 import com.example.publictransportapp.EtaHandlerThread;
@@ -36,7 +38,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 
 public class BusListFragment extends Fragment {
 
@@ -47,6 +48,7 @@ public class BusListFragment extends Fragment {
     private Handler handler;
     private Runnable etaRunnable;
     private BusRowAdapter busRowAdapter;
+    private double detectionRange;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,10 +65,18 @@ public class BusListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        TextView titleBar = getActivity().findViewById(R.id.title_bar);
+        titleBar.setText(R.string.busList_button);
 
-
+        ImageButton filterButton = getActivity().findViewById(R.id.filter_button);
+        filterButton.setVisibility(View.VISIBLE);
         // check if user location is granted
         getUserLocation();
+
+        // get applied range
+        if (getArguments() != null) {
+            detectionRange = getArguments().getDouble("detection_range", 200);
+        }
 
         // Populate busRowList
         handler = new Handler();
@@ -127,6 +137,7 @@ public class BusListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        fetchBusData();
         handler.post(etaRunnable);
     }
 
@@ -150,7 +161,7 @@ public class BusListFragment extends Fragment {
                 double stopLat =  Double.parseDouble(StopList.stopList.get(i).get("lat"));
                 double stopLong = Double.parseDouble(StopList.stopList.get(i).get("long"));
                 //Log.d(TAG, "Determining range of Object: " + StopList.stopList.get(i));
-                if (calculateDistance(stopLat, stopLong) < 0.2) {
+                if (calculateDistance(stopLat, stopLong) < detectionRange / 1000) {
                     // get stopId and stopName for BusRowList
                     String stopId = StopList.stopList.get(i).get("stopId");
                     //Log.d(TAG, "StopId: " + stopId);

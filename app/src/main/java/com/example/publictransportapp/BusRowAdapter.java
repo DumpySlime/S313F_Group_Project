@@ -1,7 +1,7 @@
 package com.example.publictransportapp;
 
 import android.content.Context;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.example.publictransportapp.model.BusRowList;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,7 +24,7 @@ public class BusRowAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return data.size()-5;
+        return data.size();
     }
 
     @Override
