@@ -66,7 +66,7 @@ public class BookmarkFragment extends Fragment {
             String distinction = distinctionInput.getText().toString();
             String stopCategory = stopCategoryInput.getText().toString();
             StopObject stopObject = new StopObject(routeNumber, distinction, stopCategory);
-            addStopToList(routeNumber, distinction, stopCategory);
+            addStopToList(routeNumber, distinction, stopCategory, stopObject);
             saveStopToPreferences(stopObject); // Save to SharedPreferences
         });
 
@@ -75,15 +75,19 @@ public class BookmarkFragment extends Fragment {
         builder.create().show();
     }
 
-    private void addStopToList(String routeNumber, String distinction, String stopCategory) {
+    private void addStopToList(String routeNumber, String distinction, String stopCategory, StopObject stopObject) {
         View stopItem = LayoutInflater.from(requireContext()).inflate(R.layout.item_stop, stopListContainer, false);
         TextView stopDetails = stopItem.findViewById(R.id.text_stop_details);
         Button deleteButton = stopItem.findViewById(R.id.btn_delete_stop);
 
-        stopDetails.setText("Route: " + routeNumber + ", Distinction: " + distinction + ", Category: " + stopCategory);
+        stopDetails.setText("Route: " + routeNumber + ", Destination: " + distinction + ", Category: " + stopCategory);
 
         // Set delete functionality
-        deleteButton.setOnClickListener(v -> stopListContainer.removeView(stopItem));
+        deleteButton.setOnClickListener(
+                v -> {
+                    stopListContainer.removeView(stopItem);
+                    removeStopFromPreference(stopObject);}
+        );
 
         stopListContainer.addView(stopItem);
     }
@@ -100,7 +104,7 @@ public class BookmarkFragment extends Fragment {
             String location = locationInput.getText().toString();
             String category = categoryInput.getText().toString();
             Place place = new Place(location, category);
-            addPlaceToList(location, category);
+            addPlaceToList(location, category, place);
             savePlaceToPreferences(place); // Save to SharedPreferences
         });
 
@@ -110,7 +114,7 @@ public class BookmarkFragment extends Fragment {
 
     }
 
-    private void addPlaceToList(String location, String category) {
+    private void addPlaceToList(String location, String category, Place place) {
         View placeItem = LayoutInflater.from(requireContext()).inflate(R.layout.item_place, placeListContainer, false);
         TextView placeDetails = placeItem.findViewById(R.id.text_place_details);
         Button deleteButton = placeItem.findViewById(R.id.btn_delete_place);
@@ -118,7 +122,10 @@ public class BookmarkFragment extends Fragment {
         placeDetails.setText("Location: " + location + ", Category: " + category);
 
         // Set delete functionality
-        deleteButton.setOnClickListener(v -> placeListContainer.removeView(placeItem));
+        deleteButton.setOnClickListener(v -> {
+            placeListContainer.removeView(placeItem);
+            removePlaceFromPreference(place);
+        });
 
         placeListContainer.addView(placeItem);
     }
@@ -128,7 +135,7 @@ public class BookmarkFragment extends Fragment {
         List<StopObject> stopObjects = new Gson().fromJson(stopsJson, new TypeToken<List<StopObject>>(){}.getType());
 
         for (StopObject stopObject : stopObjects) {
-            addStopToList(stopObject.getRouteNumber(), stopObject.getDistinction(), stopObject.getStopCategory());
+            addStopToList(stopObject.getRouteNumber(), stopObject.getDistinction(), stopObject.getStopCategory(), stopObject);
         }
     }
 
@@ -138,7 +145,7 @@ public class BookmarkFragment extends Fragment {
         List<Place> places = new Gson().fromJson(placesJson, new TypeToken<List<Place>>(){}.getType());
 
         for (Place place : places) {
-            addPlaceToList(place.getLocation(), place.getCategory());
+            addPlaceToList(place.getLocation(), place.getCategory(), place);
         }
     }
     private void saveStopToPreferences(StopObject stopObject) {
@@ -160,6 +167,28 @@ public class BookmarkFragment extends Fragment {
         // Convert JSON to a List, add new place, and save it back
         List<Place> places = new Gson().fromJson(placesJson, new TypeToken<List<Place>>(){}.getType());
         places.add(place);
+
+        String newPlacesJson = new Gson().toJson(places);
+        prefs.edit().putString("places", newPlacesJson).apply();
+    }
+
+    private void removeStopFromPreference(StopObject stopObject) {
+        SharedPreferences prefs = requireContext().getSharedPreferences("bookmarks", Context.MODE_PRIVATE);
+        String stopsJson = prefs.getString("stops", "[]");
+
+        List<StopObject> stopObjects = new Gson().fromJson(stopsJson, new TypeToken<List<StopObject>>(){}.getType());
+        stopObjects.remove(stopObject);
+
+        String newStopsJson = new Gson().toJson(stopObjects);
+        prefs.edit().putString("stops", newStopsJson).apply();
+    }
+
+    private void removePlaceFromPreference(Place place) {
+        SharedPreferences prefs = requireContext().getSharedPreferences("bookmarks", Context.MODE_PRIVATE);
+        String placesJson = prefs.getString("places", "[]");
+
+        List<Place> places = new Gson().fromJson(placesJson, new TypeToken<List<Place>>(){}.getType());
+        places.remove(place);
 
         String newPlacesJson = new Gson().toJson(places);
         prefs.edit().putString("places", newPlacesJson).apply();

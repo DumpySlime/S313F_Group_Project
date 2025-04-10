@@ -1,5 +1,7 @@
 package com.example.publictransportapp.model;
 
+import java.util.Objects;
+
 public class StopObject {
     private String routeNumber;
     private String distinction;
@@ -34,5 +36,20 @@ public class StopObject {
 
     public void setStopCategory(String stopCategory) {
         this.stopCategory = stopCategory;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        StopObject that = (StopObject) obj;
+        return routeNumber.equals(that.routeNumber) &&
+                distinction.equals(that.distinction) &&
+                stopCategory.equals(that.stopCategory);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(routeNumber, distinction, stopCategory);
     }
 }
